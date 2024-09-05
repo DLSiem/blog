@@ -9,6 +9,10 @@ const { PORT, MONGODB_URI } = process.env;
 // middleware
 app.use(express.json());
 
+// implement cors to allow cross-origin requests
+const cors = require("cors");
+app.use(cors());
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {

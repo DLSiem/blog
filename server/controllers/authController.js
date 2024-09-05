@@ -11,25 +11,25 @@ const signup = async (req, res) => {
   console.log(email, password);
   if (!email || !password || email.trim() === "" || password.trim() === "") {
     console.log(email, password);
-    return res.status(400).json({ error: "Email and Password is required" });
+    return res.status(400).json({ message: "Email and Password is required" });
   }
   // check if email is valid
   if (!email.includes("@") || !email.includes(".")) {
-    return res.status(400).json({ error: "Email is not valid" });
+    return res.status(400).json({ message: "Email is not valid" });
   }
 
   // check if password is less than 6 characters
   if (password.trim().length < 6) {
     return res
       .status(400)
-      .json({ error: "Password must be at least 6 characters" });
+      .json({ message: "Password must be at least 6 characters" });
   }
 
   try {
     // check if user already exists
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     // hash password
@@ -43,7 +43,7 @@ const signup = async (req, res) => {
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
