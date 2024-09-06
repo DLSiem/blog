@@ -1,5 +1,5 @@
 import { Link, useFetcher } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ErrorMessage } from "../components";
 
 const Login = () => {
@@ -22,6 +22,12 @@ const Login = () => {
       }
     );
   };
+
+  useEffect(() => {
+    if (fetcher.data) {
+      setError(fetcher.data.message);
+    }
+  }, [fetcher.data]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">

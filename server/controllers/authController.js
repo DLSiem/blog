@@ -60,6 +60,13 @@ const authenticate = async (req, res) => {
       if (!user) {
         return res.status(400).json({ message: "User does not exists" });
       }
+
+      // check if password is correct
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+        return res.status(400).json({ message: "Invalid Password" });
+      }
+
       userId = user._id;
     }
     // create token
