@@ -4,12 +4,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Profile, Auth, Login, Signup } from "./pages";
 import { HomeLayout } from "./components";
 
-import { authActions } from "./actions/authActions";
+import { authActions, isAutheticated, logout } from "./actions/authActions";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
+    loader: isAutheticated,
+    id: "root",
     children: [
       {
         index: true,
@@ -31,11 +33,16 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+        action: authActions,
       },
       {
         path: "signup",
         element: <Signup />,
         action: authActions,
+      },
+      {
+        path: "logout",
+        action: logout,
       },
     ],
   },

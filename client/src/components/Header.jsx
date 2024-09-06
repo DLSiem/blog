@@ -1,6 +1,7 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Form, useRouteLoaderData } from "react-router-dom";
 
 const Header = () => {
+  const isAutheticated = useRouteLoaderData("root");
   return (
     <header className="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
       <h1 className="text-2xl font-bold">My Blog Website</h1>
@@ -28,20 +29,30 @@ const Header = () => {
           </li>
         </ul>
       </nav>
-      <div className="space-x-4">
-        <NavLink
-          to="/auth/login"
-          className="px-4 py-2 bg-white text-blue-600 font-semibold rounded hover:bg-blue-100"
-        >
-          Login
-        </NavLink>
-        <NavLink
-          to="/auth/signup"
-          className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-400"
-        >
-          Signup
-        </NavLink>
-      </div>
+      {isAutheticated ? (
+        <div className="space-x-4">
+          <Form action="/auth/logout" method="POST">
+            <button className="px-4 py-1 bg-red-700 text-white font-semibold rounded hover:bg-red-600">
+              Logout
+            </button>
+          </Form>
+        </div>
+      ) : (
+        <div className="space-x-4">
+          <NavLink
+            to="/auth/login"
+            className="px-4 py-2 bg-white text-blue-600 font-semibold rounded hover:bg-blue-100"
+          >
+            Login
+          </NavLink>
+          <NavLink
+            to="/auth/signup"
+            className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-400"
+          >
+            Signup
+          </NavLink>
+        </div>
+      )}
     </header>
   );
 };

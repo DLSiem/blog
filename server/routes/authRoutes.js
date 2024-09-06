@@ -1,11 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const { signup } = require("../controllers/authController");
+const {
+  authenticate,
+  refreshToken,
+  protected,
+} = require("../controllers/authController");
 
 router.get("/", (req, res) => {
   res.send("Auth");
 });
 
-router.post("/signup", signup);
+router.post("/signup", authenticate);
+router.post("/login", authenticate);
+router.get("/refreshtoken", refreshToken);
+router.get("/protected", protected);
 
 module.exports = router;
