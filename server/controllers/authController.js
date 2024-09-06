@@ -8,13 +8,10 @@ const User = require("../models/usermodel");
 // User Signup and Login
 const authenticate = async (req, res) => {
   const { email, password, type } = req.body;
-  console.log(req.body);
 
-  console.log("Type", type);
   // check is email or password is empty
   console.log(email, password);
   if (!email || !password || email.trim() === "" || password.trim() === "") {
-    console.log(email, password);
     return res.status(400).json({ message: "Email and Password is required" });
   }
   // check if email is valid
@@ -48,7 +45,7 @@ const authenticate = async (req, res) => {
       console.log("Hash", hashedPassword);
 
       // create new user
-      const newUser = new User({ email, password });
+      const newUser = new User({ email, password: hashedPassword });
       await newUser.save();
 
       userId = newUser._id;
@@ -71,7 +68,7 @@ const authenticate = async (req, res) => {
     }
     // create token
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-      expiresIn: "20m",
+      expiresIn: "20s",
     });
 
     // create refresh token
@@ -79,18 +76,17 @@ const authenticate = async (req, res) => {
       expiresIn: "7d",
     });
 
-    // store refresh token in httpOnly cookie and send it to client
-
+    // store refresh token in http-only cookie send to client side
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
     });
 
-    return res.status(201).json({ message: "Sign In successfully", token });
+    res.status(201).json({ message: "Sign In successfully", token });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -104,14 +100,18 @@ const protected = async (req, res) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // check if token is valid
+    jwt.verify(token, process.env.JWT_SECRET); // check if token is valid
     return res.status(200).json({ message: "Authorized" });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Token Expired" });
+      return res
+        .status(401)
+        .json({ message: "Token Expired", error: error.name });
     }
     if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({ message: "Token Invalid" });
+      return res
+        .status(401)
+        .json({ message: "Token Invalid", error: error.name });
     }
     return res.status(500).json({ message: "Internal Server Error" });
   }
@@ -120,8 +120,25 @@ const protected = async (req, res) => {
 // refresh token
 
 const refreshToken = async (req, res) => {
+  console.log("Req:", req.cookies);
   const refreshToken = req.cookies.refreshToken;
-  console.log("Refresh Token", refreshToken);
+  if (refreshToken) {
+    jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const token = jwt.sign(
+        { userId: decoded.userId },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "20s",
+        }
+      );
+      return res.status(200).json({ message: "Token Refreshed", token });
+    });
+  } else {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 };
 
 // User Logout

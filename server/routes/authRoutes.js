@@ -12,7 +12,6 @@ router.get("/", (req, res) => {
 
 router.post("/signup", authenticate);
 router.post("/login", authenticate);
-router.get("/refreshtoken", refreshToken);
+router.post("/refreshtoken", refreshToken);
 router.get("/protected", protected);
-
 module.exports = router;
