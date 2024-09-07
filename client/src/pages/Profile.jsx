@@ -1,12 +1,54 @@
-// Profile.jsx
+import { useContext } from "react";
+
+import { UserContext } from "../utils/UserContext";
+
 const Profile = () => {
+  const { user, loading } = useContext(UserContext);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4 mt-40">
+          {/* Loading spinner */}
+          <div className="h-16 w-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
+          {/* Fade-in loading text */}
+          <p className="text-blue-600 text-lg font-semibold animate-pulse">
+            Loading, please wait...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto py-8">
-      <h2 className="text-3xl font-semibold mb-4">Profile</h2>
-      <p className="text-gray-700">
-        This is the profile page. You can update your information and view your
-        past activities here.
-      </p>
+    <div className="flex items-center justify-center bg-gray-100 p-4">
+      <div className="max-w-md w-full bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="p-4 flex flex-col items-center">
+          {/* Profile Picture */}
+          <div className="relative w-32 h-32">
+            <img
+              src={user.profilePicture}
+              alt="Profile"
+              className="rounded-full w-full h-full object-cover shadow-md"
+            />
+          </div>
+
+          {/* Username */}
+          <h2 className="text-xl font-bold mt-4 text-gray-800">
+            {user.username}
+          </h2>
+
+          {/* Email */}
+          <p className="text-gray-600 mt-2">{user.email}</p>
+        </div>
+
+        {/* Edit Profile Button */}
+        <div className="bg-gray-50 p-4 text-center">
+          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+            Edit Profile
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

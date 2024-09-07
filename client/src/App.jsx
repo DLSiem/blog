@@ -3,9 +3,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Home, Profile, Auth, Login, Signup } from "./pages";
 
-import { HomeLayout, ProtectedRoutes } from "./components";
+import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
 
 import { authActions, isAuthenticated, logout } from "./actions/authActions";
+
+import { UserProvider } from "./utils/UserContext";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,7 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
+
         element: (
           <ProtectedRoutes>
             <Profile />
@@ -35,7 +38,11 @@ const router = createBrowserRouter([
           },
           {
             path: "login",
-            element: <Login />,
+            element: (
+              <OnlyNoneAuth>
+                <Login />
+              </OnlyNoneAuth>
+            ),
             action: authActions,
           },
           {
@@ -54,7 +61,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
+  );
 }
 
 export default App;

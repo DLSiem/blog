@@ -9,8 +9,6 @@ const User = require("../models/usermodel");
 const authenticate = async (req, res) => {
   const { email, password, type } = req.body;
 
-  // check is email or password is empty
-  console.log(email, password);
   if (!email || !password || email.trim() === "" || password.trim() === "") {
     return res.status(400).json({ message: "Email and Password is required" });
   }
@@ -30,45 +28,52 @@ const authenticate = async (req, res) => {
     // for type === 'signup'
 
     let userId = null;
+    let user = null;
 
     if (type === "signup") {
       // check if user already exists
 
-      const user = await User.findOne({ email });
-      if (user) {
+      const findUser = await User.findOne({ email });
+      if (findUser) {
         return res.status(400).json({ message: "User already exists" });
       }
 
       // hash password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = bcrypt.hashSync(password, salt);
-      console.log("Hash", hashedPassword);
 
-      // create new user
       const newUser = new User({ email, password: hashedPassword });
       await newUser.save();
 
       userId = newUser._id;
+      if (newUser && newUser._doc) {
+        const { password, ...userData } = newUser._doc;
+        user = userData;
+      }
     } else if (type === "login") {
       // for type === 'login'
 
       // check if user exists
-      const user = await User.findOne({ email });
-      if (!user) {
+      const findUser = await User.findOne({ email });
+      if (!findUser) {
         return res.status(400).json({ message: "User does not exists" });
       }
 
       // check if password is correct
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = await bcrypt.compare(password, findUser.password);
       if (!validPassword) {
         return res.status(400).json({ message: "Invalid Password" });
       }
 
-      userId = user._id;
+      userId = findUser._id;
+      if (findUser && findUser._doc) {
+        const { password, ...userData } = findUser._doc;
+        user = userData;
+      }
     }
     // create token
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-      expiresIn: "20s",
+      expiresIn: "20m",
     });
 
     // create refresh token
@@ -82,8 +87,11 @@ const authenticate = async (req, res) => {
       secure: true,
       sameSite: "strict",
     });
+    // extract all the properties from user object except password
+    // const { password, ...userData } = data._doc;
+    console.log("User:", user);
 
-    res.status(201).json({ message: "Sign In successfully", token });
+    res.status(201).json({ message: "Sign In successfully", token, user });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });

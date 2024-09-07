@@ -1,12 +1,15 @@
-import { Link, useFetcher } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useFetcher, useNavigate } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 import ErrorMessage from "../components/ErrorMessage";
+import { UserContext } from "../utils/UserContext";
 
 const Signup = () => {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const fetcher = useFetcher();
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,10 +27,17 @@ const Signup = () => {
   };
 
   useEffect(() => {
+    console.log(fetcher.data);
     if (fetcher.data) {
       setError(fetcher.data.message);
+      setUser(fetcher.data.user);
     }
-  }, [fetcher.data]);
+  }, [fetcher.data, setUser]);
+
+  if (fetcher.data?.ok) {
+    navigate("/");
+  }
+
   return (
     <div className="min-h-screen flex flex-col justify-center  items-center  bg-gray-50">
       <div className="border px-3 py-6 rounded  w-80 shadow-md">

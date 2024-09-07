@@ -3,7 +3,7 @@ import { isAuthenticated } from "../actions/authActions";
 import { Navigate } from "react-router-dom";
 import propTypes from "prop-types";
 
-const ProtectedRoutes = ({ children }) => {
+const OnlyNoneAuth = ({ children }) => {
   const [isAuth, setIsAuth] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,15 +30,15 @@ const ProtectedRoutes = ({ children }) => {
       </div>
     );
   }
-  if (!isAuth) {
-    return <Navigate to="/auth/login" />;
+  if (isAuth) {
+    return <Navigate to="/" />;
   }
 
   return children;
 };
 
-ProtectedRoutes.propTypes = {
+OnlyNoneAuth.propTypes = {
   children: propTypes.node.isRequired,
 };
 
-export default ProtectedRoutes;
+export default OnlyNoneAuth;

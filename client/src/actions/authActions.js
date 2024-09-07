@@ -14,13 +14,14 @@ export const authActions = async ({ request }) => {
   });
 
   const data = await response.json();
+  let { token, user } = data;
 
   if (response.ok) {
-    let { token } = data;
     localStorage.setItem("token", token);
-    return redirect("/");
+
+    return json({ message: data.message, user, ok: true });
   }
-  return json({ message: data.message });
+  return json({ message: data.message, user });
 };
 
 export const refreshToken = async () => {
@@ -71,7 +72,7 @@ export const isAuthenticated = async () => {
       return false;
     }
   } catch (error) {
-    console.log("Error:", error);
+    console.log(error);
     return false;
   }
 };

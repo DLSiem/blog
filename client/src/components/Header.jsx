@@ -1,7 +1,12 @@
 import { NavLink, Form, useRouteLoaderData } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../utils/UserContext";
 
 const Header = () => {
   const isAutheticated = useRouteLoaderData("root");
+
+  const { user } = useContext(UserContext);
+
   return (
     <header className="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
       <h1 className="text-2xl font-bold">My Blog </h1>
@@ -25,7 +30,7 @@ const Header = () => {
                   return isActive ? "underline" : "hover:underline";
                 }}
               >
-                Profile
+                {user ? user.username : "Profile"}
               </NavLink>
             </li>
           )}

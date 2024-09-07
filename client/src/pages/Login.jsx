@@ -1,12 +1,15 @@
-import { Link, useFetcher } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, useNavigate, useFetcher } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 import { ErrorMessage } from "../components";
+import { UserContext } from "../utils/UserContext";
 
 const Login = () => {
+  const { setUser } = useContext(UserContext);
   const fetcher = useFetcher();
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +29,12 @@ const Login = () => {
     if (fetcher.data) {
       setError(fetcher.data.message);
     }
-  }, [fetcher.data]);
+    setUser(fetcher.data?.user);
+  }, [fetcher.data, setUser]);
+
+  if (fetcher.data?.ok) {
+    navigate("/");
+  }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
