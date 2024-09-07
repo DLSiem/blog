@@ -3,7 +3,6 @@ import { json, redirect } from "react-router-dom";
 export const authActions = async ({ request }) => {
   const formData = await request.formData();
   const { type, email, password } = Object.fromEntries(formData);
-  console.log("Type", type);
 
   const response = await fetch(`http://localhost:3000/auth/${type}`, {
     method: "POST",
@@ -14,11 +13,7 @@ export const authActions = async ({ request }) => {
     credentials: "include", // send cookies with the request to the server for session management (login)
   });
 
-  console.log("Response:", response);
-
   const data = await response.json();
-
-  console.log("Data", data);
 
   if (response.ok) {
     let { token } = data;
@@ -29,7 +24,6 @@ export const authActions = async ({ request }) => {
 };
 
 export const refreshToken = async () => {
-  console.log("Refreshing token...");
   const response = await fetch("http://localhost:3000/auth/refreshtoken", {
     method: "POST",
     headers: {
@@ -42,13 +36,13 @@ export const refreshToken = async () => {
     const data = await response.json();
     let { token } = data;
     localStorage.setItem("token", token);
-    console.log("Token refreshed");
+
     return true;
   }
   return false;
 };
 
-export const isAutheticated = async () => {
+export const isAuthenticated = async () => {
   let token = localStorage.getItem("token");
   if (!token) {
     return false;
@@ -63,10 +57,8 @@ export const isAutheticated = async () => {
     const data = await response.json();
 
     if (response.status === 401 && data.error === "TokenExpiredError") {
-      console.log("Token expired");
       const response = await refreshToken();
       if (response) {
-        console.log("Token refreshed successfully......");
         return true;
       } else {
         return false;

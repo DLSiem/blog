@@ -120,7 +120,6 @@ const protected = async (req, res) => {
 // refresh token
 
 const refreshToken = async (req, res) => {
-  console.log("Req:", req.cookies);
   const refreshToken = req.cookies.refreshToken;
   if (refreshToken) {
     jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH, (err, decoded) => {
@@ -131,7 +130,7 @@ const refreshToken = async (req, res) => {
         { userId: decoded.userId },
         process.env.JWT_SECRET,
         {
-          expiresIn: "20s",
+          expiresIn: "20m",
         }
       );
       return res.status(200).json({ message: "Token Refreshed", token });

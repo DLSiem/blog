@@ -4,7 +4,7 @@ const Header = () => {
   const isAutheticated = useRouteLoaderData("root");
   return (
     <header className="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
-      <h1 className="text-2xl font-bold">My Blog Website</h1>
+      <h1 className="text-2xl font-bold">My Blog </h1>
       <nav className="mt-2">
         <ul className="flex space-x-6">
           <li>
@@ -17,16 +17,18 @@ const Header = () => {
               Home
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="profile"
-              className={({ isActive }) => {
-                return isActive ? "underline" : "hover:underline";
-              }}
-            >
-              Profile
-            </NavLink>
-          </li>
+          {isAutheticated && (
+            <li>
+              <NavLink
+                to="profile"
+                className={({ isActive }) => {
+                  return isActive ? "underline" : "hover:underline";
+                }}
+              >
+                Profile
+              </NavLink>
+            </li>
+          )}
         </ul>
       </nav>
       {isAutheticated ? (
