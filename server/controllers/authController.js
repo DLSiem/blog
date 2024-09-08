@@ -87,9 +87,6 @@ const authenticate = async (req, res) => {
       secure: true,
       sameSite: "strict",
     });
-    // extract all the properties from user object except password
-    // const { password, ...userData } = data._doc;
-    console.log("User:", user);
 
     res.status(201).json({ message: "Sign In successfully", token, user });
   } catch (error) {

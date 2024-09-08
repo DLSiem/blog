@@ -1,11 +1,12 @@
 // import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { Home, Profile, Auth, Login, Signup } from "./pages";
+import { Home, Profile, Auth, Login, Signup, ImageUpload } from "./pages";
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
 
 import { authActions, isAuthenticated, logout } from "./actions/authActions";
+import { update } from "./actions/userActions";
 
 import { UserProvider } from "./utils/UserContext";
 
@@ -21,8 +22,12 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "image",
+        element: <ImageUpload />,
+      },
+      {
         path: "profile",
-
+        action: update,
         element: (
           <ProtectedRoutes>
             <Profile />

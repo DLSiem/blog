@@ -27,7 +27,6 @@ const Signup = () => {
   };
 
   useEffect(() => {
-    console.log(fetcher.data);
     if (fetcher.data) {
       setError(fetcher.data.message);
       setUser(fetcher.data.user);

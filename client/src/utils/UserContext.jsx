@@ -29,6 +29,7 @@ export const UserProvider = ({ children }) => {
       });
 
       const { data } = await response.json();
+
       setUser(data);
     } catch (error) {
       console.log(error);
@@ -42,7 +43,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loading, setUser }}>
+    <UserContext.Provider value={{ user, loading, setUser, setLoading }}>
       {children}
     </UserContext.Provider>
   );
