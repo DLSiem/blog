@@ -14,5 +14,4 @@ router.post("/create", createBlog);
 router.get("/:id", getBlog);
 router.patch("/:id/update", updateBlog);
 router.delete("/:id/delete", deleteBlog);
-
 module.exports = router;

@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const generateSlug = (title) => {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
+
 const blogSchema = new Schema(
   {
     title: {
@@ -22,9 +29,10 @@ const blogSchema = new Schema(
       ref: "Category",
       required: true,
     },
+
+    // Store tags as an array of ObjectIds
     tags: {
-      type: Schema.Types.ObjectId,
-      ref: "Tag",
+      type: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
       required: true,
     },
     imageUrl: {
@@ -41,13 +49,7 @@ const blogSchema = new Schema(
       type: Number,
       default: 0,
     },
-    comments: [
-      {
-        user: { type: Schema.Types.ObjectId, ref: "User" },
-        comment: String,
-        date: { type: Date, default: Date.now },
-      },
-    ],
+    comments: [],
     status: {
       type: String,
       enum: ["draft", "published", "archived"],
@@ -62,6 +64,13 @@ const blogSchema = new Schema(
     timestamps: true,
   }
 );
+
+blogSchema.pre("save", function (next) {
+  if (this.isModified("title") || this.isNew) {
+    this.slug = generateSlug(this.title);
+  }
+  next();
+});
 
 const Blog = mongoose.model("Blog", blogSchema);
 module.exports = Blog;

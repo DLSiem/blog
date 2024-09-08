@@ -4,7 +4,10 @@ const Tag = require("../models/tagModel");
 
 const createBlog = async (req, res) => {
   try {
-    const { title, content, category, tags, author } = req.body;
+    const { title, content, category, tags, author, likes, status, views } =
+      req.body;
+
+    console.log("req.body", req.body);
 
     // Step 1: Check if the category exists or create a new one
     let blogCategory = await Category.findOne({ name: category });
@@ -13,15 +16,15 @@ const createBlog = async (req, res) => {
       await blogCategory.save();
     }
 
+    let tagObjectIds = [];
     // Step 2: Handle the tags (similar logic to Tag handling)
-    let tagIds = [];
     for (let tagName of tags) {
       let tag = await Tag.findOne({ name: tagName });
       if (!tag) {
         tag = new Tag({ name: tagName });
         await tag.save();
       }
-      tagIds.push(tag._id);
+      tagObjectIds.push(tag._id);
     }
 
     // Step 3: Create the blog post
@@ -29,8 +32,11 @@ const createBlog = async (req, res) => {
       title,
       content,
       category: blogCategory._id, // Store category ObjectId
-      tags: tagIds, // Store array of tag ObjectIds
+      tags: tagObjectIds, // Store array of tag ObjectIds
       author,
+      likes: likes || 0,
+      status: status || "draft",
+      views: views || 0,
     });
 
     await newBlog.save();
@@ -46,7 +52,7 @@ const getAllBlogs = async (req, res) => {
     const blogs = await Blog.find()
       .populate("category", "name") // Populate category field with only the name
       .populate("tags", "name") // Populate tags as well
-      .populate("image", "url"); // Populate image field with only the url
+      .populate("imageUrl"); // Populate image field with only the url
     res.status(200).json(blogs);
   } catch (error) {
     res.status(500).json({ message: error.message });
