@@ -11,7 +11,7 @@ const {
 
 router.get("/", getAllBlogs);
 router.post("/create", createBlog);
-router.get("/:id", getBlog);
+router.get("/:slug", getBlog);
 router.patch("/:id/update", updateBlog);
 router.delete("/:id/delete", deleteBlog);
 module.exports = router;

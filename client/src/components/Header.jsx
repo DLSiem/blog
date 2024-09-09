@@ -22,16 +22,6 @@ const Header = () => {
               Home
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="image"
-              className={({ isActive }) => {
-                return isActive ? "underline" : "hover:underline";
-              }}
-            >
-              Image
-            </NavLink>
-          </li>
           {isAutheticated && (
             <li>
               <NavLink

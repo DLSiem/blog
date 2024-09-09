@@ -1,12 +1,22 @@
 // import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { Home, Profile, Auth, Login, Signup, ImageUpload } from "./pages";
+import {
+  Home,
+  Profile,
+  Auth,
+  Login,
+  Signup,
+  ImageUpload,
+  BlogPage,
+} from "./pages";
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
 
 import { authActions, isAuthenticated, logout } from "./actions/authActions";
 import { update } from "./actions/userActions";
+
+import { getBlog, getBlogBySlug } from "./loaders/blogLoader";
 
 import { UserProvider } from "./utils/UserContext";
 
@@ -19,7 +29,13 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        loader: getBlog,
         element: <Home />,
+      },
+      {
+        path: ":slug",
+        loader: getBlogBySlug,
+        element: <BlogPage />,
       },
       {
         path: "image",

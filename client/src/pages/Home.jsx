@@ -1,36 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+// import { useEffect, useState } from "react";
+import { Link, useLoaderData } from "react-router-dom";
 
 const Home = () => {
-  const [blogs, setBlogs] = useState([
-    {
-      _id: "123456",
-      title: "Blog Post 1",
-      content: "This is the content of blog post 1",
-      excerpt: "This is a short excerpt for blog post 1",
-      authorName: "John Doe",
-    },
-    {
-      _id: "654321",
-      title: "Blog Post 2",
-      content: "This is the content of blog post 2",
-      excerpt: "This is a short excerpt for blog post 2",
-      authorName: "Jane Smith",
-    },
-  ]);
+  const { blogs } = useLoaderData();
 
-  // Fetch blogs from an API (replace with actual API call)
-  useEffect(() => {
-    // Simulate fetching blog data
-    const fetchBlogs = async () => {
-      // Replace this with actual API call to your backend
-      const response = await fetch("http://localhost:3000/api/blogs");
-      const data = await response.json();
-      setBlogs(data);
-    };
-
-    fetchBlogs();
-  }, []);
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">Latest Blogs</h1>
@@ -43,17 +16,15 @@ const Home = () => {
               className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
             >
               <h3 className="text-xl font-bold mb-2 text-blue-600 hover:underline">
-                <Link to={`/blog/${blog._id}`}>{blog.title}</Link>
+                <Link to={`/${blog.slug}`}>{blog.title}</Link>
               </h3>
               <p className="text-gray-600 mb-4">
                 {blog.excerpt || blog.content.substring(0, 100)}...
               </p>
               <div className="flex justify-between items-center">
-                <span className="text-gray-500 text-sm">
-                  By {blog.authorName}
-                </span>
+                <span className="text-gray-500 text-sm">By {blog.author}</span>
                 <Link
-                  to={`/blog/${blog._id}`}
+                  to={`/${blog.slug}`}
                   className="text-blue-500 hover:text-blue-700 font-semibold"
                 >
                   Read More

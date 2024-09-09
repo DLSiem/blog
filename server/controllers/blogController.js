@@ -49,23 +49,44 @@ const createBlog = async (req, res) => {
 
 const getAllBlogs = async (req, res) => {
   try {
+    // get latest 10 blogs for pagination purposes
     const blogs = await Blog.find()
-      .populate("category", "name") // Populate category field with only the name
-      .populate("tags", "name") // Populate tags as well
-      .populate("imageUrl"); // Populate image field with only the url
-    res.status(200).json(blogs);
+      .populate("category", "name")
+      .populate("author", "username")
+      .populate("tags", "name")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    // send only the title and the content, author name upto 100 characters
+    const modifiedBlogs = blogs.map((blog) => {
+      return {
+        _id: blog._id,
+        title: blog.title,
+        content: blog.content.substring(0, 100),
+        author: blog.author.username,
+        slug: blog.slug,
+      };
+    });
+
+    res.status(200).json(modifiedBlogs);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 const getBlog = async (req, res) => {
-  const { id } = req.params;
+  console.log("getBlog:", req.params);
+  const { slug } = req.params;
   try {
-    const blog = await Blog.findById(id)
+    const blog = await Blog.findOne({ slug })
       .populate("category", "name")
-      .populate("tags", "name")
-      .populate("image", "url");
+      .populate("author", "username")
+      .populate("tags", "name");
+
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
     res.status(200).json(blog);
   } catch (error) {
     res.status(500).json({ message: error.message });
