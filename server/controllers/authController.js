@@ -12,6 +12,7 @@ const authenticate = async (req, res) => {
   if (!email || !password || email.trim() === "" || password.trim() === "") {
     return res.status(400).json({ message: "Email and Password is required" });
   }
+
   // check if email is valid
   if (!email.includes("@") || !email.includes(".")) {
     return res.status(400).json({ message: "Email is not valid" });

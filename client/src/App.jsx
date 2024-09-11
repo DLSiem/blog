@@ -21,6 +21,7 @@ import { createBlog } from "./actions/blogActions";
 import { getBlog, getBlogBySlug } from "./loaders/blogLoader";
 
 import { AuthProvider } from "./context/AuthContext";
+import EditProfile from "./pages/EditProfile";
 
 const router = createBrowserRouter([
   {
@@ -55,11 +56,25 @@ const router = createBrowserRouter([
       {
         path: "profile",
         action: update,
-        element: (
-          <ProtectedRoutes>
-            <Profile />
-          </ProtectedRoutes>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedRoutes>
+                <Profile />
+              </ProtectedRoutes>
+            ),
+          },
+          {
+            path: "update",
+            action: update,
+            element: (
+              <ProtectedRoutes>
+                <EditProfile />
+              </ProtectedRoutes>
+            ),
+          },
+        ],
       },
       {
         path: "auth",
