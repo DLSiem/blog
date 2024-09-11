@@ -40,10 +40,7 @@ const Header = () => {
       {isAuth ? (
         <div className="space-x-4">
           <button
-            onClick={() => {
-              console.log("Logout");
-              logout();
-            }}
+            onClick={logout}
             className="px-4 py-1 bg-red-700 text-white font-semibold rounded hover:bg-red-600"
           >
             Logout

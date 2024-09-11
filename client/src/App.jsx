@@ -65,7 +65,11 @@ const router = createBrowserRouter([
           },
           {
             path: "signup",
-            element: <Signup />,
+            element: (
+              <OnlyNoneAuth>
+                <Signup />,
+              </OnlyNoneAuth>
+            ),
           },
           {
             path: "logout",

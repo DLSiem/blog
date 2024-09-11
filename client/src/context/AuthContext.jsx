@@ -51,6 +51,7 @@ const authReducer = (state, action) => {
         ...state,
         isAuthenticated: true,
         user: action.payload.user,
+        loading: false,
       };
 
     case "SIGNUP_FAILURE": {

@@ -12,8 +12,11 @@ const Profile = () => {
   const [editProfile, setEditProfile] = useState(false);
   // const [imageLoading, setImageLoading] = useState(false);
   const { state } = useAuth();
+
   const user = state.user;
+
   const loading = state.loading;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center">
