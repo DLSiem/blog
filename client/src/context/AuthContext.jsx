@@ -143,7 +143,6 @@ export const AuthProvider = ({ children }) => {
         });
         return;
       } else {
-        console.log(false);
         dispatch({
           type: "LOGOUT",
         });
@@ -214,6 +213,7 @@ export const AuthProvider = ({ children }) => {
           type: "LOGIN_FAILURE",
           payload: data,
         });
+        return;
       }
 
       // store the token in the local storage
@@ -230,6 +230,7 @@ export const AuthProvider = ({ children }) => {
           message: "Internal server error!",
         },
       });
+      return;
     }
   };
 

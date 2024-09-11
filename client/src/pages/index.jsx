@@ -7,3 +7,4 @@ export { default as Login } from "./Login";
 export { default as Signup } from "./Signup";
 export { default as ImageUpload } from "./ImageUpload";
 export { default as BlogPage } from "./BlogPage";
+export { default as CreateBlog } from "./CreateBlog";

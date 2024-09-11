@@ -1,5 +1,6 @@
 // import { useEffect, useState } from "react";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 
 const Home = () => {
   const { blogs } = useLoaderData();

@@ -1,13 +1,9 @@
-// import { useState, useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
+import {} from "react";
 import { FaThumbsUp, FaEye, FaCommentDots } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 
 const BlogPage = () => {
-  const { blog } = useLoaderData(); // Get the data from the loader
-
-  // Fetch blog data from API using slug
-
+  const { blog } = useLoaderData();
   if (!blog) {
     return <div>Loading...</div>;
   }

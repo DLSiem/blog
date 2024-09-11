@@ -9,6 +9,7 @@ import {
   Signup,
   ImageUpload,
   BlogPage,
+  CreateBlog,
 } from "./pages";
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
@@ -30,10 +31,19 @@ const router = createBrowserRouter([
         loader: getBlog,
         element: <Home />,
       },
+
       {
         path: ":slug",
         loader: getBlogBySlug,
         element: <BlogPage />,
+      },
+      {
+        path: "create",
+        element: (
+          <ProtectedRoutes>
+            <CreateBlog />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "image",

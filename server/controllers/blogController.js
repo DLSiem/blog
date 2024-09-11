@@ -1,6 +1,6 @@
-const Blog = require("../models/blogModel");
 const Category = require("../models/categoryModel");
 const Tag = require("../models/tagModel");
+const Blog = require("../models/blogModel");
 
 const createBlog = async (req, res) => {
   try {
@@ -75,7 +75,6 @@ const getAllBlogs = async (req, res) => {
 };
 
 const getBlog = async (req, res) => {
-  console.log("getBlog:", req.params);
   const { slug } = req.params;
   try {
     const blog = await Blog.findOne({ slug })

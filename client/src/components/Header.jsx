@@ -24,16 +24,28 @@ const Header = () => {
             </NavLink>
           </li>
           {isAuth && (
-            <li>
-              <NavLink
-                to="profile"
-                className={({ isActive }) => {
-                  return isActive ? "underline" : "hover:underline";
-                }}
-              >
-                {user ? user.username : "Profile"}
-              </NavLink>
-            </li>
+            <>
+              <li>
+                <NavLink
+                  to="profile"
+                  className={({ isActive }) => {
+                    return isActive ? "underline" : "hover:underline";
+                  }}
+                >
+                  {user ? user.username : "Profile"}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="create"
+                  className={({ isActive }) => {
+                    return isActive ? "underline" : "hover:underline";
+                  }}
+                >
+                  Create
+                </NavLink>
+              </li>
+            </>
           )}
         </ul>
       </nav>
