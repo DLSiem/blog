@@ -13,7 +13,6 @@ import {
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
 
-import { isTokenValid } from "./actions/authActions";
 import { update } from "./actions/userActions";
 
 import { getBlog, getBlogBySlug } from "./loaders/blogLoader";
@@ -24,7 +23,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
-    loader: isTokenValid,
     id: "root",
     children: [
       {

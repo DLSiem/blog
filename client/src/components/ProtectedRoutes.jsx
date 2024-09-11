@@ -1,20 +1,11 @@
-import { useEffect, useState } from "react";
-import { isTokenValid } from "../actions/authActions";
 import { Navigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+
 import propTypes from "prop-types";
 
 const ProtectedRoutes = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const authStatus = await isTokenValid();
-      setIsAuth(authStatus);
-      setLoading(false);
-    };
-    checkAuth();
-  }, []);
+  const { state, loading } = useAuth();
+  const isAuth = state.isAuthenticated;
 
   if (loading) {
     return (
@@ -33,7 +24,6 @@ const ProtectedRoutes = ({ children }) => {
   if (!isAuth) {
     return <Navigate to="/auth/login" />;
   }
-
   return children;
 };
 

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
 
-import { useAuth } from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -18,9 +18,9 @@ const Signup = () => {
     };
     await signup(userData);
   };
-  if (state.isAuthenticated) {
-    return <h1>You are already Signin in</h1>;
-  }
+  // if (state.isAuthenticated) {
+  //   return <h1>You are already Signin in</h1>;
+  // }
 
   return (
     <div className="min-h-screen flex flex-col justify-center  items-center  bg-gray-50">

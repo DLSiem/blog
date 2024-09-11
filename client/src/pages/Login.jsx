@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { ErrorMessage } from "../components";
 
-import { useAuth } from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
   const { login, state } = useAuth();
@@ -18,10 +18,6 @@ const Login = () => {
     };
     await login(userData);
   };
-
-  if (state.isAuthenticated) {
-    return <h1>You are already logged in</h1>;
-  }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">

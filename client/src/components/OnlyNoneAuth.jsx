@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
-import { isTokenValid } from "../actions/authActions";
+import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+
 import propTypes from "prop-types";
 
 const OnlyNoneAuth = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(null);
-  const [loading, setLoading] = useState(true);
-
+  const { state, loading, isTokenValid } = useAuth();
+  const isAuth = state.isAuthenticated;
   useEffect(() => {
     const checkAuth = async () => {
-      const authStatus = await isTokenValid();
-      setIsAuth(authStatus);
-      setLoading(false);
+      await isTokenValid();
     };
     checkAuth();
   }, []);

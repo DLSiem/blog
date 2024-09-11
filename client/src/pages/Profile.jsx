@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useAuth } from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 // import { ToastContainer, toast } from "react-toastify";
 
@@ -14,8 +14,6 @@ const Profile = () => {
   const { state } = useAuth();
   const user = state.user;
   const loading = state.loading;
-  console.log("user:-", user);
-  console.log("loading:-", loading);
   if (loading) {
     return (
       <div className="flex items-center justify-center">

@@ -14,8 +14,6 @@ const initialStates = {
 const authReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN_REQUEST":
-      console.log("login request");
-
       return {
         ...state,
         loading: true,
@@ -23,8 +21,6 @@ const authReducer = (state, action) => {
       };
 
     case "LOGIN": {
-      console.log("login success");
-      console.log("action.payload:-", action.payload);
       return {
         ...state,
         isAuthenticated: true,
@@ -34,8 +30,6 @@ const authReducer = (state, action) => {
     }
 
     case "LOGIN_FAILURE": {
-      console.log("login failure");
-      console.log("action.payload:-", action.payload);
       return {
         ...state,
         loading: false,
@@ -79,6 +73,7 @@ const authReducer = (state, action) => {
     case "TOKEN_VALID": {
       return {
         ...state,
+        user: action.payload.data,
         isAuthenticated: true,
         loading: false,
       };
@@ -185,7 +180,6 @@ export const AuthProvider = ({ children }) => {
   // check if token is valid on load and refresh
 
   useEffect(() => {
-    console.log("checking token");
     isTokenValid();
   }, []);
 
@@ -197,7 +191,6 @@ export const AuthProvider = ({ children }) => {
       type: "LOGIN_REQUEST",
     });
 
-    console.log("next");
     try {
       // dispatch login success
       const resposne = await fetch("http://localhost:3000/auth/login", {
@@ -272,7 +265,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       localStorage.setItem("token", data.token);
-      console.log("Signup success");
+
       dispatch({
         type: "SIGNUP",
         payload: data,

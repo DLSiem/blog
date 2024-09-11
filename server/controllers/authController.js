@@ -87,7 +87,6 @@ const authenticate = async (req, res) => {
       secure: true,
       sameSite: "strict",
     });
-
     res.status(201).json({ message: "Sign In successfully", token, user });
   } catch (error) {
     console.log(error);
@@ -106,7 +105,16 @@ const protected = async (req, res) => {
 
   try {
     jwt.verify(token, process.env.JWT_SECRET); // check if token is valid
-    return res.status(200).json({ message: "Authorized" });
+    // if valid return authorized message and user data
+
+    const { userId } = jwt.decode(token);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const { password, ...userData } = user._doc;
+    return res.status(200).json({ message: "Authorized", data: userData });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       return res

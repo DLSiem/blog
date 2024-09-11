@@ -1,7 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import propTypes from "prop-types";
-import { isAuthenticated } from "../actions/authActions";
-import useIsAuth from "../hooks/useIsAuth";
 
 export const UserContext = createContext();
 

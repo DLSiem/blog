@@ -1,15 +1,16 @@
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { NavLink, Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Header = () => {
   const { state, logout } = useAuth();
   const isAuth = state.isAuthenticated;
   const user = state.user;
-  console.log("isAuth:-", isAuth);
-  console.log("user:-", user);
+
   return (
     <header className="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
-      <h1 className="text-2xl font-bold">My Blog </h1>
+      <h1 className="text-2xl font-bold">
+        <Link to="/">My Blog</Link>
+      </h1>
       <nav className="mt-2">
         <ul className="flex space-x-6">
           <li>
