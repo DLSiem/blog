@@ -1,8 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import propTypes from "prop-types";
 import { isAuthenticated } from "../actions/authActions";
+import useIsAuth from "../hooks/useIsAuth";
 
 export const UserContext = createContext();
+
+// const isAuthen = isAuthenticated();
 
 export const UserProvider = ({ children }) => {
   UserProvider.propTypes = {
@@ -10,16 +13,11 @@ export const UserProvider = ({ children }) => {
   };
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  // const [isAuth, setIsAuth] = useState(false);
 
-  //
+  // initialsize isAuthentication function
 
   const fetchUserData = async () => {
-    const isAuth = await isAuthenticated();
-    if (!isAuth) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
     try {
       const response = await fetch("http://localhost:3000/user", {
         method: "GET",

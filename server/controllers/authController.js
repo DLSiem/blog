@@ -138,6 +138,12 @@ const refreshToken = async (req, res) => {
           expiresIn: "20m",
         }
       );
+
+      const user = User.findById(decoded.userId);
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+
       return res.status(200).json({ message: "Token Refreshed", token });
     });
   } else {

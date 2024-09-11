@@ -1,12 +1,12 @@
-import { NavLink, Form, useRouteLoaderData } from "react-router-dom";
-import { useContext } from "react";
-import { UserContext } from "../utils/UserContext";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Header = () => {
-  const isAutheticated = useRouteLoaderData("root");
-
-  const { user } = useContext(UserContext);
-
+  const { state, logout } = useAuth();
+  const isAuth = state.isAuthenticated;
+  const user = state.user;
+  console.log("isAuth:-", isAuth);
+  console.log("user:-", user);
   return (
     <header className="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
       <h1 className="text-2xl font-bold">My Blog </h1>
@@ -22,7 +22,7 @@ const Header = () => {
               Home
             </NavLink>
           </li>
-          {isAutheticated && (
+          {isAuth && (
             <li>
               <NavLink
                 to="profile"
@@ -36,13 +36,17 @@ const Header = () => {
           )}
         </ul>
       </nav>
-      {isAutheticated ? (
+      {isAuth ? (
         <div className="space-x-4">
-          <Form action="/auth/logout" method="POST">
-            <button className="px-4 py-1 bg-red-700 text-white font-semibold rounded hover:bg-red-600">
-              Logout
-            </button>
-          </Form>
+          <button
+            onClick={() => {
+              console.log("Logout");
+              logout();
+            }}
+            className="px-4 py-1 bg-red-700 text-white font-semibold rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
         </div>
       ) : (
         <div className="space-x-4">

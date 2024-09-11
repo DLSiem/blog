@@ -13,18 +13,18 @@ import {
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
 
-import { authActions, isAuthenticated, logout } from "./actions/authActions";
+import { isTokenValid } from "./actions/authActions";
 import { update } from "./actions/userActions";
 
 import { getBlog, getBlogBySlug } from "./loaders/blogLoader";
 
-import { UserProvider } from "./utils/UserContext";
+import { AuthProvider } from "./context/AuthContext";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
-    loader: isAuthenticated,
+    loader: isTokenValid,
     id: "root",
     children: [
       {
@@ -64,16 +64,13 @@ const router = createBrowserRouter([
                 <Login />
               </OnlyNoneAuth>
             ),
-            action: authActions,
           },
           {
             path: "signup",
             element: <Signup />,
-            action: authActions,
           },
           {
             path: "logout",
-            action: logout,
           },
         ],
       },
@@ -83,9 +80,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <UserProvider>
+    <AuthProvider>
       <RouterProvider router={router} />
-    </UserProvider>
+    </AuthProvider>
   );
 }
 

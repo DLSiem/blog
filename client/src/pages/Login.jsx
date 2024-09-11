@@ -1,39 +1,26 @@
-import { Link, useNavigate, useFetcher } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import { ErrorMessage } from "../components";
-import { UserContext } from "../utils/UserContext";
+
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
-  const { setUser } = useContext(UserContext);
-  const fetcher = useFetcher();
-  const [error, setError] = useState("");
+  const { login, state } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    fetcher.submit(
-      {
-        type: "login",
-        email: email,
-        password: password,
-      },
-      {
-        method: "POST",
-      }
-    );
+
+    const userData = {
+      email,
+      password,
+    };
+    await login(userData);
   };
 
-  useEffect(() => {
-    if (fetcher.data) {
-      setError(fetcher.data.message);
-    }
-    setUser(fetcher.data?.user);
-  }, [fetcher.data, setUser]);
-
-  if (fetcher.data?.ok) {
-    navigate("/");
+  if (state.isAuthenticated) {
+    return <h1>You are already logged in</h1>;
   }
 
   return (
@@ -48,7 +35,6 @@ const Login = () => {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setError("");
             }}
             className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -59,7 +45,6 @@ const Login = () => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setError("");
             }}
             className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -75,7 +60,7 @@ const Login = () => {
             </Link>
           </p>
         </div>
-        {error && <ErrorMessage message={error} />}
+        {state.error ? <ErrorMessage message={state.message} /> : ""}
       </div>
     </div>
   );

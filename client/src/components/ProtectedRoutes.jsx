@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { isAuthenticated } from "../actions/authActions";
+import { isTokenValid } from "../actions/authActions";
 import { Navigate } from "react-router-dom";
 import propTypes from "prop-types";
 
@@ -9,7 +9,7 @@ const ProtectedRoutes = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const authStatus = await isAuthenticated();
+      const authStatus = await isTokenValid();
       setIsAuth(authStatus);
       setLoading(false);
     };
