@@ -16,6 +16,8 @@ import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
 
 import { update } from "./actions/userActions";
 
+import { createBlog } from "./actions/blogActions";
+
 import { getBlog, getBlogBySlug } from "./loaders/blogLoader";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -39,6 +41,7 @@ const router = createBrowserRouter([
       },
       {
         path: "create",
+        action: createBlog,
         element: (
           <ProtectedRoutes>
             <CreateBlog />

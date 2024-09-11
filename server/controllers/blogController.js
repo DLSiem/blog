@@ -7,6 +7,9 @@ const createBlog = async (req, res) => {
     const { title, content, category, tags, author, likes, status, views } =
       req.body;
 
+    // convert tags to array
+    let tagsArray = tags.split(",").map((tag) => tag.trim());
+
     console.log("req.body", req.body);
 
     // Step 1: Check if the category exists or create a new one
@@ -18,7 +21,7 @@ const createBlog = async (req, res) => {
 
     let tagObjectIds = [];
     // Step 2: Handle the tags (similar logic to Tag handling)
-    for (let tagName of tags) {
+    for (let tagName of tagsArray) {
       let tag = await Tag.findOne({ name: tagName });
       if (!tag) {
         tag = new Tag({ name: tagName });
@@ -40,7 +43,10 @@ const createBlog = async (req, res) => {
     });
 
     await newBlog.save();
-    res.status(201).json(newBlog);
+    res.status(201).json({
+      message: "Blog created successfully",
+      blog: newBlog,
+    });
   } catch (error) {
     console.log("Error creating blog", error);
     res.status(500).json({ message: error.message });
@@ -116,4 +122,36 @@ const deleteBlog = async (req, res) => {
   }
 };
 
-module.exports = { createBlog, getAllBlogs, getBlog, updateBlog, deleteBlog };
+// get all categories list
+
+const getCategories = async (req, res) => {
+  try {
+    const response = await Category.find();
+    const categories = response;
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// get all tags list
+
+const getTags = async (req, res) => {
+  try {
+    const response = await Tag.find();
+    const tags = response;
+    res.status(200).json(tags);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createBlog,
+  getAllBlogs,
+  getBlog,
+  updateBlog,
+  deleteBlog,
+  getCategories,
+  getTags,
+};
