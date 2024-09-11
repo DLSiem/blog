@@ -125,8 +125,6 @@ const CreateBlog = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Submitting form data: ", formData);
-
     if (!formData.category && !formData.customCategory) {
       return setError("Please select a category or enter a custom category");
     }
@@ -147,10 +145,6 @@ const CreateBlog = () => {
       tagsArray = [...tagsArray, ...formData.customTags.split(",")];
     }
 
-    console.log("Tags - trandformed: ", tagsArray);
-
-    console.log("Submitting form data: ", formData);
-
     const blogData = {
       author: state.user._id,
       title: formData.title,
@@ -159,8 +153,6 @@ const CreateBlog = () => {
       category: formData.category,
       tags: tagsArray,
     };
-
-    console.log("Blog Data: ", blogData);
 
     fetcher.submit(blogData, {
       method: "POST",
@@ -346,7 +338,7 @@ const CreateBlog = () => {
             name="customTags"
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter custom tags"
+            placeholder="Enter custom tags eg: tag1, tag2, tag3"
           />
         </div>
 

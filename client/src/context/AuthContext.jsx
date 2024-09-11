@@ -126,6 +126,7 @@ export const AuthProvider = ({ children }) => {
           type: "REFRESHING_TOKEN",
         });
         const response = await refreshToken();
+
         if (response) {
           return true;
         } else {
@@ -168,10 +169,16 @@ export const AuthProvider = ({ children }) => {
     });
 
     if (response.status === 200) {
-      const data = await response.json();
-      let { token } = data;
+      const res = await response.json();
+
+      let { token, user } = res;
+      const data = user;
       localStorage.setItem("token", token);
 
+      dispatch({
+        type: "TOKEN_VALID",
+        payload: data,
+      });
       return true;
     }
     return false;

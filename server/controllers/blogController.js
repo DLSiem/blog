@@ -10,8 +10,6 @@ const createBlog = async (req, res) => {
     // convert tags to array
     let tagsArray = tags.split(",").map((tag) => tag.trim());
 
-    console.log("req.body", req.body);
-
     // Step 1: Check if the category exists or create a new one
     let blogCategory = await Category.findOne({ name: category });
     if (!blogCategory) {

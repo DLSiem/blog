@@ -134,28 +134,27 @@ const protected = async (req, res) => {
 
 const refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  if (refreshToken) {
-    jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH, (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-      const token = jwt.sign(
-        { userId: decoded.userId },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "20m",
-        }
-      );
-
-      const user = User.findById(decoded.userId);
+  try {
+    if (refreshToken) {
+      jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH);
+      const { userId } = jwt.decode(refreshToken);
+      const user = await User.findById(userId);
       if (!user) {
         return res.status(400).json({ message: "User not found" });
       }
-
-      return res.status(200).json({ message: "Token Refreshed", token });
-    });
-  } else {
-    return res.status(401).json({ message: "Unauthorized" });
+      const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+        expiresIn: "20m",
+      });
+      const { password, ...userData } = user._doc;
+      return res
+        .status(200)
+        .json({ message: "Token Refreshed", token, user: userData });
+    } else {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

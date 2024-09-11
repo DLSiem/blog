@@ -20,7 +20,6 @@ export const createBlog = async ({ request }) => {
     console.log(error);
     return null;
   }
-  return null;
 };
 
 // update blog
