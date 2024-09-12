@@ -21,6 +21,23 @@ const Profile = () => {
     );
   }
 
+  const deleteBlog = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:3000/${id}/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.ok) {
+        // toast.success("Blog deleted successfully");
+        console.log("Blog deleted successfully");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <>
       <div className="flex items-center justify-center bg-gray-100 p-4">
@@ -59,11 +76,9 @@ const Profile = () => {
 
       <div className="flex items-center justify-center bg-gray-100 p-4">
         <div className="max-w-3xl w-full bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="p-4">
-            <h2 className="text-xl font-bold text-gray-800 text-underline border-b-2">
-              Your Blogs
-            </h2>
-          </div>
+          <h2 className="text-2xl p-4 text-center font-extrabold text-gray-800 text-underline border-b-2">
+            Your Blogs
+          </h2>
 
           {blogs.length === 0 ? (
             <div className="p-4 text-center">
@@ -82,28 +97,30 @@ const Profile = () => {
               >
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">
-                    {blog.title}
+                    <Link to={`/${blog.slug}`} className="hover:underline">
+                      {blog.title}
+                    </Link>
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 pr-3">
                     {blog.content.substring(0, 100)}
                   </p>
                 </div>
 
-                <div className="items-center space-x-4">
-                  <Link
-                    to={`/${blog.slug}/update`}
-                    className={`px-4 py-2 bg-yellow-500 text-white rounded-lg
-                  hover:bg-yellow-600`}
+                <div className="">
+                  <div
+                    className="px-4 py-2 text-center bg-yellow-500 text-white rounded-lg
+                  hover:bg-yellow-600"
                   >
-                    Edit
-                  </Link>
-
-                  <Link
-                    to={`/${blog.slug}`}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                    <Link to={`/${blog.slug}/update`}>Edit</Link>
+                  </div>
+                  <button
+                    onClick={() => {
+                      deleteBlog(blog._id);
+                    }}
+                    className={`px-4 py-2 mt-2 bg-red-500 text-center text-white rounded-lg hover:bg-red-600`}
                   >
-                    View
-                  </Link>
+                    Delete
+                  </button>
                 </div>
               </div>
             ))

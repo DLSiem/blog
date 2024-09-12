@@ -1,15 +1,51 @@
 import {} from "react";
 import { FaThumbsUp, FaEye, FaCommentDots } from "react-icons/fa";
 import { Link, useLoaderData } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const BlogPage = () => {
   const { blog } = useLoaderData();
+  const { state } = useAuth();
+  const isAuth = state.isAuthenticated;
+  const userId = state.user?._id;
+
   if (!blog) {
     return <div>Loading...</div>;
   }
+
+  const onClickDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/${blog._id}/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        console.log("Blog deleted successfully");
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
+      {/* Delete button */}
+      {isAuth && userId === blog.author._id && (
+        <div className="mb-6">
+          <button
+            onClick={onClickDelete}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Delete Blog
+          </button>
+        </div>
+      )}
       <div className="bg-white shadow-lg rounded-lg p-6">
+        {/* Blog Title */}
         <h1 className="text-4xl font-bold text-gray-800 mb-6">{blog.title}</h1>
         {/* Blog Image */}
         {blog.imageUrl && (
