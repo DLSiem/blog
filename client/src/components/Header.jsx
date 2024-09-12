@@ -1,10 +1,11 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const Header = () => {
   const { state, logout } = useAuth();
   const isAuth = state.isAuthenticated;
   const user = state.user;
+  const navigate = useNavigate();
 
   return (
     <header className="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
@@ -52,7 +53,10 @@ const Header = () => {
       {isAuth ? (
         <div className="space-x-4">
           <button
-            onClick={logout}
+            onClick={() => {
+              logout();
+              navigate("/");
+            }}
             className="px-4 py-1 bg-red-700 text-white font-semibold rounded hover:bg-red-600"
           >
             Logout

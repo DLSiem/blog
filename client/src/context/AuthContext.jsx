@@ -15,7 +15,6 @@ const initialStates = {
 const authReducer = (state, action) => {
   switch (action.type) {
     case "SET_USER": {
-      console.log("action", action.payload);
       return {
         ...state,
         user: {
@@ -80,6 +79,7 @@ const authReducer = (state, action) => {
         ...state,
         isAuthenticated: false,
         user: null,
+        loading: true,
       };
     }
 
@@ -305,7 +305,6 @@ export const AuthProvider = ({ children }) => {
 
   // set user
   const updateUser = (user) => {
-    console.log("user", user);
     dispatch({
       type: "SET_USER",
       payload: user,

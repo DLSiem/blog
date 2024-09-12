@@ -74,6 +74,7 @@ const EditProfile = () => {
   useEffect(() => {
     if (fetcher.data) {
       if (fetcher.data.ok) {
+        console.log("User Updated:-", fetcher.data.user);
         navigate("/profile/" + fetcher.data.user._id);
       } else {
         console.log("Error:-", fetcher.data.message);
@@ -97,7 +98,7 @@ const EditProfile = () => {
 
             <div className="relative w-32 h-32 ">
               {imageLoading && (
-                <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
                   <div className="h-8 w-8 border-t-2 border-b-2 border-red-500 rounded-full animate-spin"></div>
                 </div>
               )}
