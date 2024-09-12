@@ -18,6 +18,6 @@ router.get("/categories", getCategories);
 router.get("/tags", getTags);
 router.get("/:slug", getBlog);
 router.get("/author/:authorId", getBlogsByAuthor);
-router.patch("/:id/update", updateBlog);
+router.patch("/:slug/update", updateBlog);
 router.delete("/:id/delete", deleteBlog);
 module.exports = router;

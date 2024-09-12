@@ -7,7 +7,6 @@ const BlogPage = () => {
   if (!blog) {
     return <div>Loading...</div>;
   }
-
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="bg-white shadow-lg rounded-lg p-6">

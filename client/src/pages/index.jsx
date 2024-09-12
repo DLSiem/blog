@@ -8,3 +8,5 @@ export { default as Signup } from "./Signup";
 export { default as ImageUpload } from "./ImageUpload";
 export { default as BlogPage } from "./BlogPage";
 export { default as CreateBlog } from "./CreateBlog";
+export { default as EditProfile } from "./EditProfile";
+export { default as EditBlog } from "./EditBlog";

@@ -10,13 +10,14 @@ import {
   ImageUpload,
   BlogPage,
   CreateBlog,
+  EditBlog,
 } from "./pages";
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
 
 import { update } from "./actions/userActions";
 
-import { createBlog } from "./actions/blogActions";
+import { createBlog, updateBlog } from "./actions/blogActions";
 
 import { getBlog, getBlogBySlug, fetchUserBlogs } from "./loaders/blogLoader";
 
@@ -45,6 +46,16 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoutes>
             <CreateBlog />
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: "/:slug/update",
+        action: updateBlog,
+        loader: getBlogBySlug,
+        element: (
+          <ProtectedRoutes>
+            <EditBlog />
           </ProtectedRoutes>
         ),
       },

@@ -107,13 +107,49 @@ const getBlog = async (req, res) => {
 };
 
 const updateBlog = async (req, res) => {
-  const { id } = req.params;
+  const { slug } = req.params;
+  console.log(req.body);
+  console.log(slug);
+  const data = req.body;
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(id, req.body, {
+    // if category is updated
+    if (data.category) {
+      let blogCategory = await Category.findOne({ name: data.category });
+      if (!blogCategory) {
+        blogCategory = new Category({ name: data.category });
+        await blogCategory.save();
+      }
+      data.category = blogCategory._id;
+    }
+
+    // if tags are updated
+    if (data.tags) {
+      let tagsArray = data.tags.split(",").map((tag) => tag.trim());
+      let tagObjectIds = [];
+      for (let tagName of tagsArray) {
+        let tag = await Tag.findOne({ name: tagName });
+        if (!tag) {
+          tag = new Tag({ name: tagName });
+          await tag.save();
+        }
+        tagObjectIds.push(tag._id);
+      }
+      data.tags = tagObjectIds;
+    }
+
+    const response = await Blog.findOneAndUpdate({ slug }, data, {
       new: true,
     });
-    res.status(200).json(updatedBlog);
+
+    if (!response) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Blog updated successfully", blog: response });
   } catch (error) {
+    console.log("Error updating blog", error);
     res.status(500).json({ message: error.message });
   }
 };

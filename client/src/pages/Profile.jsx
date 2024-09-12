@@ -88,12 +88,23 @@ const Profile = () => {
                     {blog.content.substring(0, 100)}
                   </p>
                 </div>
-                <Link
-                  to={`/${blog.slug}`}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
-                  View
-                </Link>
+
+                <div className="items-center space-x-4">
+                  <Link
+                    to={`/${blog.slug}/update`}
+                    className={`px-4 py-2 bg-yellow-500 text-white rounded-lg
+                  hover:bg-yellow-600`}
+                  >
+                    Edit
+                  </Link>
+
+                  <Link
+                    to={`/${blog.slug}`}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  >
+                    View
+                  </Link>
+                </div>
               </div>
             ))
           )}
