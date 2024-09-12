@@ -9,6 +9,7 @@ const {
   deleteBlog,
   getCategories,
   getTags,
+  getBlogsByAuthor,
 } = require("../controllers/blogController");
 
 router.get("/", getAllBlogs);
@@ -16,6 +17,7 @@ router.post("/create", createBlog);
 router.get("/categories", getCategories);
 router.get("/tags", getTags);
 router.get("/:slug", getBlog);
+router.get("/author/:authorId", getBlogsByAuthor);
 router.patch("/:id/update", updateBlog);
 router.delete("/:id/delete", deleteBlog);
 module.exports = router;

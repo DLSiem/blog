@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
-import { useFetcher } from "react-router-dom";
+import { useFetcher, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 // Cloudinary environment variables
@@ -9,6 +9,7 @@ const { VITE_CLOUDINARY_UPLOAD_PRESET, VITE_CLOUDINARY_CLOUD_NAME } =
   import.meta.env;
 
 const CreateBlog = () => {
+  const navigate = useNavigate();
   const { state } = useAuth();
   const fetcher = useFetcher();
   const [formData, setFormData] = useState({
@@ -99,11 +100,11 @@ const CreateBlog = () => {
         data
       );
       setFormData({ ...formData, imageUrl: response.data.secure_url });
-      saveImage(false);
+      setSaveImage(false);
     } catch (error) {
       console.error("Error uploading image: ", error);
     } finally {
-      saveImage(false);
+      setSaveImage(false);
       setImageLoading(false);
     }
   };
@@ -162,12 +163,17 @@ const CreateBlog = () => {
   useEffect(() => {
     if (fetcher.data) {
       console.log("Data from fetcher: ", fetcher.data);
+      if (fetcher.data.ok) {
+        navigate("/" + fetcher.data.blog.slug);
+      } else {
+        setError(fetcher.data.message);
+      }
     }
 
     if (fetcher.error) {
       console.error("Error from fetcher: ", fetcher.error);
     }
-  }, [fetcher.data, fetcher.error]);
+  }, [fetcher.data, fetcher.error, fetcher.loading, navigate, fetcher.blog]);
 
   return (
     <div className="container mx-auto py-8 px-4">

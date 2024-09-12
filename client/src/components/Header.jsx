@@ -27,7 +27,7 @@ const Header = () => {
             <>
               <li>
                 <NavLink
-                  to="profile"
+                  to={`/profile/${user?._id}`}
                   className={({ isActive }) => {
                     return isActive ? "underline" : "hover:underline";
                   }}

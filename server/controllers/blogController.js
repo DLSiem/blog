@@ -4,8 +4,17 @@ const Blog = require("../models/blogModel");
 
 const createBlog = async (req, res) => {
   try {
-    const { title, content, category, tags, author, likes, status, views } =
-      req.body;
+    const {
+      title,
+      content,
+      category,
+      tags,
+      author,
+      likes,
+      status,
+      views,
+      imageUrl,
+    } = req.body;
 
     // convert tags to array
     let tagsArray = tags.split(",").map((tag) => tag.trim());
@@ -38,6 +47,7 @@ const createBlog = async (req, res) => {
       likes: likes || 0,
       status: status || "draft",
       views: views || 0,
+      imageUrl,
     });
 
     await newBlog.save();
@@ -144,6 +154,18 @@ const getTags = async (req, res) => {
   }
 };
 
+// get blogs by author's id
+
+const getBlogsByAuthor = async (req, res) => {
+  const { authorId } = req.params;
+  try {
+    const blogs = await Blog.find({ author: authorId });
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createBlog,
   getAllBlogs,
@@ -152,4 +174,5 @@ module.exports = {
   deleteBlog,
   getCategories,
   getTags,
+  getBlogsByAuthor,
 };

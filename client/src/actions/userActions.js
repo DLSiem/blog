@@ -6,7 +6,6 @@ export const update = async ({ request }) => {
     return { message: "Unauthorized" };
   }
 
-  console.log("Data:-", data);
   try {
     const response = await fetch("http://localhost:3000/user/update", {
       method: "PATCH",
@@ -18,10 +17,7 @@ export const update = async ({ request }) => {
     });
 
     const { message, user } = await response.json();
-    console.log("Response:-", response);
-    console.log("User===>", user);
-    console.log("Message:-", message);
-    return { message, ok: response.ok };
+    return { message, ok: response.ok, user };
   } catch (error) {
     console.log(error);
   }

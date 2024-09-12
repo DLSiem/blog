@@ -2,17 +2,29 @@ import { createContext, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 
 // initial states
+
 const initialStates = {
   isAuthenticated: false,
   user: null,
   error: false,
-  loading: false,
+  loading: true,
   message: "",
 };
 
 // reducer function
 const authReducer = (state, action) => {
   switch (action.type) {
+    case "SET_USER": {
+      console.log("action", action.payload);
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      };
+    }
+
     case "LOGIN_REQUEST":
       return {
         ...state,
@@ -291,6 +303,15 @@ export const AuthProvider = ({ children }) => {
     return;
   };
 
+  // set user
+  const updateUser = (user) => {
+    console.log("user", user);
+    dispatch({
+      type: "SET_USER",
+      payload: user,
+    });
+  };
+
   // defining the logout action
   const logout = () => {
     localStorage.removeItem("token");
@@ -301,7 +322,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ state, login, signup, logout, isTokenValid }}
+      value={{ state, login, signup, updateUser, logout, isTokenValid }}
     >
       {children}
     </AuthContext.Provider>

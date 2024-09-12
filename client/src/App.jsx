@@ -18,11 +18,10 @@ import { update } from "./actions/userActions";
 
 import { createBlog } from "./actions/blogActions";
 
-import { getBlog, getBlogBySlug } from "./loaders/blogLoader";
+import { getBlog, getBlogBySlug, fetchUserBlogs } from "./loaders/blogLoader";
 
 import { AuthProvider } from "./context/AuthContext";
 import EditProfile from "./pages/EditProfile";
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -54,11 +53,12 @@ const router = createBrowserRouter([
         element: <ImageUpload />,
       },
       {
-        path: "profile",
+        path: "profile/:userId",
         action: update,
         children: [
           {
             index: true,
+            loader: fetchUserBlogs,
             element: (
               <ProtectedRoutes>
                 <Profile />

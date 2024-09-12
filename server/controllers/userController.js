@@ -40,7 +40,10 @@ const userUpdate = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res.status(200).json({ message: "Updated Successfully", user });
+    const { password, ...data } = user._doc;
+    return res
+      .status(200)
+      .json({ message: "Updated Successfully", user: data });
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error ww" });
   }

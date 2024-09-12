@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
-import { useFetcher } from "react-router-dom";
+import { useFetcher, useNavigate } from "react-router-dom";
+// import { authReducer, initialStates } from "../context/AuthContext";
 
 const { VITE_CLOUDINARY_CLOUD_NAME, VITE_CLOUDINARY_UPLOAD_PRESET } =
   import.meta.env;
 
 const EditProfile = () => {
-  const { state } = useAuth();
-  // const navigate = useNavigate();
+  const { state, updateUser } = useAuth();
+
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     username: state.user.username,
     email: state.user.email,
@@ -63,23 +65,21 @@ const EditProfile = () => {
     e.preventDefault();
     setImageLoading(true);
     setImageLoading(false);
-    console.log("Form Submitted");
-    console.log(user.profilePicture);
     fetcher.submit(user, {
       method: "PATCH",
     });
+    updateUser(user);
   };
 
   useEffect(() => {
     if (fetcher.data) {
       if (fetcher.data.ok) {
-        console.log("Success");
-        window.location.href = "/profile";
+        navigate("/profile/" + fetcher.data.user._id);
       } else {
         console.log("Error:-", fetcher.data.message);
       }
     }
-  }, [fetcher.data]);
+  }, [fetcher.data, navigate, state.user._id]);
 
   return (
     <div className="flex items-center justify-center bg-gray-100 p-4">
