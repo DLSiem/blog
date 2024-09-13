@@ -303,6 +303,54 @@ export const AuthProvider = ({ children }) => {
     return;
   };
 
+  const googleAuth = async (data) => {
+    const { username, email, imageUrl } = data;
+    dispatch({
+      type: "LOGIN_REQUEST",
+    });
+
+    try {
+      const response = await fetch("http://localhost:3000/auth/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "google",
+          username,
+          password: "googlepassword",
+          email,
+          imageUrl,
+        }),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        dispatch({
+          type: "LOGIN_FAILURE",
+          payload: data,
+        });
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      dispatch({
+        type: "LOGIN",
+        payload: data,
+      });
+    } catch (error) {
+      console.log("error:-", error);
+      dispatch({
+        type: "LOGIN_FAILURE",
+        payload: {
+          message: "Internal server error!",
+        },
+      });
+    }
+  };
+
   // set user
   const updateUser = (user) => {
     dispatch({
@@ -325,6 +373,7 @@ export const AuthProvider = ({ children }) => {
         state,
         login,
         signup,
+        googleAuth,
         updateUser,
         logout,
         isTokenValid,

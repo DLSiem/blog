@@ -74,7 +74,6 @@ const EditProfile = () => {
   useEffect(() => {
     if (fetcher.data) {
       if (fetcher.data.ok) {
-        console.log("User Updated:-", fetcher.data.user);
         navigate("/profile/" + fetcher.data.user._id);
       } else {
         console.log("Error:-", fetcher.data.message);

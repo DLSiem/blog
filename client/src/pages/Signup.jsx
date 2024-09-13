@@ -1,14 +1,17 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
+import { GoogleLogin } from "@react-oauth/google";
 
 import useAuth from "../hooks/useAuth";
+
+import { jwtDecode } from "jwt-decode";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { state, signup } = useAuth();
+  const { state, signup, googleAuth } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,9 +21,22 @@ const Signup = () => {
     };
     await signup(userData);
   };
-  // if (state.isAuthenticated) {
-  //   return <h1>You are already Signin in</h1>;
-  // }
+
+  const handleGoogleLoginSuccess = async (response) => {
+    try {
+      console.log(response);
+      const { given_name, email, picture } = jwtDecode(response.credential);
+      console.log(jwtDecode(response.credential));
+      const userData = {
+        username: given_name,
+        email,
+        imageUrl: picture,
+      };
+      await googleAuth(userData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex flex-col justify-center  items-center p-10  bg-gray-50">
@@ -51,14 +67,38 @@ const Signup = () => {
             Sign Up
           </button>
         </form>
-        <div className="my-4 ">
-          <p>
-            Already have an account? &nbsp;
-            <Link to="/auth/login" className="text-green-600 hover:underline">
-              Log In
+        <div className="my-4">
+          <p className="text-gray-700">
+            Don&apos;t have an account? &nbsp;
+            <Link to="/auth/signup" className="text-blue-600 hover:underline">
+              Sign Up
             </Link>
           </p>
         </div>
+
+        <p className="text-center font-bold text-gray-700">OR</p>
+
+        <div className="flex my-2 items-center justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleLoginSuccess}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+            text="Signin"
+            size="large"
+            theme="filled_blue"
+            width="296"
+          />
+        </div>
+
+        <p className="text-gray-700 mt-4 text-right">
+          <Link
+            to="/auth/forgot-password"
+            className="text-blue-600 hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </p>
 
         {state.error ? <ErrorMessage message={state.message} /> : ""}
       </div>

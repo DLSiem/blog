@@ -162,7 +162,6 @@ const CreateBlog = () => {
 
   useEffect(() => {
     if (fetcher.data) {
-      console.log("Data from fetcher: ", fetcher.data);
       if (fetcher.data.ok) {
         navigate("/" + fetcher.data.blog.slug);
       } else {

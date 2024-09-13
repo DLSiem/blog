@@ -2,12 +2,13 @@
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const User = require("../models/userModel");
 
 // User Signup and Login
 const authenticate = async (req, res) => {
-  const { email, password, type } = req.body;
+  const { email, password, type, imageUrl, username } = req.body;
 
   if (!email || !password || email.trim() === "" || password.trim() === "") {
     return res.status(400).json({ message: "Email and Password is required" });
@@ -30,6 +31,35 @@ const authenticate = async (req, res) => {
 
     let userId = null;
     let user = null;
+
+    if (type === "google") {
+      const findUser = await User.findOne({ email });
+
+      if (findUser) {
+        userId = findUser._id;
+        if (findUser && findUser._doc) {
+          const { password, ...userData } = findUser._doc;
+          user = userData;
+        }
+      } else {
+        const hashedPassword = bcrypt.hashSync(password, 10);
+
+        const newUser = new User({
+          email,
+          password: hashedPassword,
+          profilePicture: imageUrl,
+          username,
+        });
+
+        await newUser.save();
+
+        userId = newUser._id;
+        if (newUser && newUser._doc) {
+          const { password, ...userData } = newUser._doc;
+          user = userData;
+        }
+      }
+    }
 
     if (type === "signup") {
       // check if user already exists

@@ -108,8 +108,7 @@ const getBlog = async (req, res) => {
 
 const updateBlog = async (req, res) => {
   const { slug } = req.params;
-  console.log(req.body);
-  console.log(slug);
+
   const data = req.body;
   try {
     // if category is updated

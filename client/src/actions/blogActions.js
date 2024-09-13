@@ -4,7 +4,6 @@ export const createBlog = async ({ request }) => {
   const req = await request.formData();
   const blogData = Object.fromEntries(req);
 
-  console.log("blog", blogData);
   try {
     const response = await fetch("http://localhost:3000/create", {
       method: "POST",
@@ -30,7 +29,6 @@ export const updateBlog = async ({ request, params }) => {
   const req = await request.formData();
   const blogData = Object.fromEntries(req);
 
-  console.log("blog", blogData);
   try {
     const response = await fetch(`http://localhost:3000/${slug}/update`, {
       method: "PATCH",

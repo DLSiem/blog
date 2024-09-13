@@ -45,7 +45,6 @@ const EditBlog = () => {
     getCategories();
     getTags();
     if (state.user._id !== blog.author._id) {
-      console.log("User is not the author of this blog");
       navigate("/" + blog.slug);
     }
   }, []);
@@ -179,7 +178,6 @@ const EditBlog = () => {
 
   useEffect(() => {
     if (fetcher.data) {
-      console.log("Data from fetcher: ", fetcher.data);
       if (fetcher.data.ok) {
         navigate("/" + fetcher.data.blog.slug);
       } else {
@@ -192,16 +190,26 @@ const EditBlog = () => {
     }
   }, [fetcher.data, fetcher.error, fetcher.loading, navigate, fetcher.blog]);
 
+  // Cancel button to navigate to pprevious page
+  const onClickCancel = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
-        Update Blog Post
-      </h1>
+      <div className="bg-white shadow-lg rounded-lg my-2  py-2 flex items-center justify-between">
+        <div className="px-4">
+          <h1 className="text-3xl font-bold text-gray-800">Update Blog Post</h1>
+        </div>
+        <button
+          onClick={onClickCancel}
+          className="px-4 py-2 mr-6  ml-auto rounded-lg bg-red-500 text-white hover:bg-red-600"
+        >
+          Cancel
+        </button>
+      </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-lg p-6 space-y-6"
-      >
+      <form className="bg-white shadow-lg rounded-lg p-6 space-y-6">
         {/* Title */}
         <div>
           <label
@@ -368,6 +376,7 @@ const EditBlog = () => {
         {/* Submit Button */}
         <div>
           <button
+            onClick={handleSubmit}
             type="submit"
             className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
           >
@@ -375,6 +384,18 @@ const EditBlog = () => {
           </button>
         </div>
       </form>
+      <div className="bg-white shadow-lg rounded-lg mt-2 py-2 flex items-center justify-between">
+        <div className="px-4"></div>
+        <button
+          onClick={onClickCancel}
+          className="px-4 py-2 mr-6  ml-auto rounded-lg bg-red-500 text-white hover:bg-red-600"
+        >
+          Cancel
+        </button>
+      </div>
+
+      {/* cancel button */}
+
       {/* Error */}
       {error && <div className="text-red-500 mt-4 ">{error}</div>}
     </div>

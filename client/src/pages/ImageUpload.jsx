@@ -28,7 +28,7 @@ const ImageUpload = () => {
         }
       );
       const res = await response.json();
-      console.log("Response from cloudinary:--", res);
+
       setUrl(res.public_id);
       setLoading(false);
     } catch (error) {

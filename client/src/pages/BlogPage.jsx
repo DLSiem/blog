@@ -1,11 +1,12 @@
 import {} from "react";
 import { FaThumbsUp, FaEye, FaCommentDots } from "react-icons/fa";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const BlogPage = () => {
   const { blog } = useLoaderData();
   const { state } = useAuth();
+  const navigate = useNavigate();
   const isAuth = state.isAuthenticated;
   const userId = state.user?._id;
 
@@ -23,7 +24,6 @@ const BlogPage = () => {
       });
 
       if (response.ok) {
-        console.log("Blog deleted successfully");
         window.location.href = "/";
       }
     } catch (error) {
@@ -34,16 +34,34 @@ const BlogPage = () => {
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Delete button */}
-      {isAuth && userId === blog.author._id && (
-        <div className="mb-6">
+      <div className="bg-white shadow-lg rounded-lg my-2  py-2 flex items-center justify-between">
+        <div className="px-2">
           <button
-            onClick={onClickDelete}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
           >
-            Delete Blog
+            BACK
           </button>
         </div>
-      )}
+        <div className="px-2">
+          {isAuth && userId === blog.author._id && (
+            <>
+              <Link
+                to={`update`}
+                className="px-4  py-2 mr-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-4"
+              >
+                Edit Blog
+              </Link>
+              <button
+                onClick={onClickDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Delete Blog
+              </button>
+            </>
+          )}
+        </div>
+      </div>
       <div className="bg-white shadow-lg rounded-lg p-6">
         {/* Blog Title */}
         <h1 className="text-4xl font-bold text-gray-800 mb-6">{blog.title}</h1>

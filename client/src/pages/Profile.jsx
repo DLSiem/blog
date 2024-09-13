@@ -31,7 +31,7 @@ const Profile = () => {
       });
       if (res.ok) {
         // toast.success("Blog deleted successfully");
-        console.log("Blog deleted successfully");
+
         window.location.reload();
       }
     } catch (error) {
