@@ -6,6 +6,8 @@ const {
   protected,
   sendEmailVerification,
   verifyEmailToken,
+  otpLogin,
+  otpVerify,
 } = require("../controllers/authController");
 
 router.get("/", (req, res) => {
@@ -18,6 +20,8 @@ router.post("/google", authenticate);
 router.post("/refreshtoken", refreshToken);
 router.post("/sendemailverification", sendEmailVerification);
 router.get("/verifyemailtoken", verifyEmailToken);
+router.post("/otplogin", otpLogin);
+router.post("/otpverify", otpVerify);
 router.get("/protected", protected);
 
 module.exports = router;

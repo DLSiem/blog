@@ -31,7 +31,8 @@ const ProtectedRoutes = ({ children }) => {
         </div>
       </div>
     );
-  } else if (!isAuth && !loading) {
+  }
+  if (!isAuth) {
     return (
       <div className="flex flex-col items-center justify-center h-screen px-4">
         {/* Main message */}

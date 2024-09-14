@@ -17,7 +17,7 @@ const Header = () => {
 
   // Simulating loading effect
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000); // 2 seconds delay
+    const timer = setTimeout(() => setLoading(false), 1400); // 1.4 seconds delay
     return () => clearTimeout(timer);
   }, []);
 

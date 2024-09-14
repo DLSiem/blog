@@ -1,6 +1,9 @@
 const { sendEmail } = require("./mailController");
 const nodemailer = require("nodemailer");
-const { authenticator } = require("otplib");
+const { authenticator, totp } = require("otplib");
+
+authenticator.options = { step: 120, window: 1 }; // 3 minutes valid otp
+totp.options = { step: 120, window: 1 }; // 2 minutes valid otp for login otp
 
 // User Signup
 const bcrypt = require("bcrypt");
@@ -241,9 +244,6 @@ const sendEmailVerification = async (req, res) => {
       html: `<!DOCTYPE html>
   <html lang="en">
   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Email Verification</title>
       <style>
           body {
               font-family: Arial, sans-serif;
@@ -375,10 +375,194 @@ const verifyEmailToken = async (req, res) => {
   }
 };
 
+const otpLogin = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const otp = totp.generate(process.env.TOTP_SECRET);
+
+    // create test email account
+    let testAccount = await nodemailer.createTestAccount();
+
+    if (!testAccount) {
+      console.log("Internal Server Error");
+      return { message: "Internal Server Error" };
+    }
+    console.log("testAccount", testAccount);
+
+    // create a SMTP transporter object
+    let transporter = nodemailer.createTransport({
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
+
+    // message object
+
+    let message = {
+      from: `Sender <${testAccount.user}>`,
+      to: `Receiver <${email}>`,
+      subject: "Email Verification",
+      text: "Please verify your email by clicking the link below.",
+      html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .otp-code {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 1px;
+            margin: 20px 0;
+        }
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #777;
+        }
+        .footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>OTP Verification</h1>
+        </div>
+        <div class="content">
+            <p>Hello,</p>
+            <p>Here is your One-Time Password (OTP) for verification:</p>
+            <div class="otp-code">${otp}</div>
+            <p>This OTP is valid for the next 5 minutes. Please use it to complete your verification process.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+
+  `,
+    };
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail(message);
+
+    if (!info) {
+      return { message: "Internal Server Error" };
+    }
+
+    console.log("Message sent: %s", info.messageId);
+
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info), otp);
+
+    return res.status(200).json({ message: "Email Sent", info, otp });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const otpVerify = async (req, res) => {
+  const { otp, email } = req.body;
+
+  if (!otp || !email) {
+    return res.status(400).json({ message: "OTP and Email is required" });
+  }
+  try {
+    const isValid = totp.verify({
+      token: otp,
+      secret: process.env.TOTP_SECRET,
+    });
+
+    console.log("isValid", isValid);
+    if (!isValid) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const { password, ...userData } = user._doc;
+
+    const userId = user._id;
+    // create token
+    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+      expiresIn: "20m",
+    });
+
+    // create refresh token
+    const refreshToken = jwt.sign({ userId }, process.env.JWT_SECRET_REFRESH, {
+      expiresIn: "7d",
+    });
+
+    // store refresh token in http-only cookie send to client side
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
+    res.status(201).json({ message: "OTP Verified", token, user: userData });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   authenticate,
   protected,
   refreshToken,
   sendEmailVerification,
   verifyEmailToken,
+  otpLogin,
+  otpVerify,
 };
