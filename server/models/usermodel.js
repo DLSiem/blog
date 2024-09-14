@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
       minLength: 6,
       required: true,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
     profilePicture: {
       type: String,
       default:

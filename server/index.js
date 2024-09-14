@@ -41,7 +41,9 @@ mongoose
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const blogRoutes = require("./routes/blogRoutes");
+const sendEmail = require("./controllers/mailController");
 
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/", blogRoutes);
+app.post("/sendmail", sendEmail);

@@ -10,3 +10,5 @@ export { default as BlogPage } from "./BlogPage";
 export { default as CreateBlog } from "./CreateBlog";
 export { default as EditProfile } from "./EditProfile";
 export { default as EditBlog } from "./EditBlog";
+export { default as EmailVerify } from "./EmailVerify";
+export { default as EmailVerifyMessage } from "./EmailVerifyMessage";

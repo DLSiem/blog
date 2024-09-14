@@ -11,6 +11,8 @@ import {
   BlogPage,
   CreateBlog,
   EditBlog,
+  EmailVerify,
+  EmailVerifyMessage,
 } from "./pages";
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
@@ -20,6 +22,7 @@ import { update } from "./actions/userActions";
 import { createBlog, updateBlog } from "./actions/blogActions";
 
 import { getBlog, getBlogBySlug, fetchUserBlogs } from "./loaders/blogLoader";
+import { verifyEmailToken } from "./loaders/authLoader";
 
 import { AuthProvider } from "./context/AuthContext";
 import EditProfile from "./pages/EditProfile";
@@ -109,6 +112,15 @@ const router = createBrowserRouter([
                 <Signup />,
               </OnlyNoneAuth>
             ),
+          },
+          {
+            path: "emailverify",
+            element: <EmailVerify />,
+          },
+          {
+            path: "emailverifymessage",
+            loader: verifyEmailToken,
+            element: <EmailVerifyMessage />,
           },
           {
             path: "logout",

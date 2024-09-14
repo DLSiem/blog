@@ -47,8 +47,6 @@ const userUpdate = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error ww" });
   }
-
-  return null;
 };
 
 module.exports = { profile, userUpdate };

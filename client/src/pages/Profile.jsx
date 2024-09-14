@@ -1,5 +1,6 @@
 import useAuth from "../hooks/useAuth";
 import { Link, useLoaderData } from "react-router-dom";
+import { MdVerified, MdOutlineError } from "react-icons/md";
 
 const Profile = () => {
   const { state } = useAuth();
@@ -52,14 +53,40 @@ const Profile = () => {
                 className="rounded-full w-full h-full object-cover shadow-md"
               />
             </div>
-
             {/* Username */}
             <h2 className="text-xl font-bold mt-4 text-gray-800">
               {user?.username}
             </h2>
-
             {/* Email */}
-            <p className="text-gray-600 mt-2">{user?.email}</p>
+
+            <div className="flex flex-col items-center space-y-2">
+              <div className="flex items-center">
+                <p className="text-gray-600 font-medium mr-1">{user?.email}</p>
+                {user.emailVerified ? (
+                  <span className=" text-green-500" title="Verified">
+                    <MdVerified className="" />
+                  </span>
+                ) : (
+                  <span
+                    className="flex  my-auto text-red-500"
+                    title="Not Verified"
+                  >
+                    <MdOutlineError className="h-5 w-5" />
+                  </span>
+                )}
+              </div>
+              {
+                // If email is not verified, show the verify email link
+                !user.emailVerified && (
+                  <Link
+                    to="/auth/emailverify"
+                    className="text-blue-500 text-sm font-bold border p-1 px-2 rounded-lg hover:bg-blue-600 hover:text-white transition"
+                  >
+                    Verify Email
+                  </Link>
+                )
+              }
+            </div>
           </div>
 
           {/* Edit Profile Button */}
@@ -117,7 +144,7 @@ const Profile = () => {
                     onClick={() => {
                       deleteBlog(blog._id);
                     }}
-                    className={`px-4 py-2 mt-2 bg-red-500 text-center text-white rounded-lg hover:bg-red-600`}
+                    className="px-4 py-2 mt-2 bg-red-500 text-center text-white rounded-lg hover:bg-red-600"
                   >
                     Delete
                   </button>

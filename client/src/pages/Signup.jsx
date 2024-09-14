@@ -70,8 +70,8 @@ const Signup = () => {
         <div className="my-4">
           <p className="text-gray-700">
             Don&apos;t have an account? &nbsp;
-            <Link to="/auth/signup" className="text-blue-600 hover:underline">
-              Sign Up
+            <Link to="/auth/login" className="text-blue-600 hover:underline">
+              Sign In
             </Link>
           </p>
         </div>
@@ -84,7 +84,7 @@ const Signup = () => {
             onError={() => {
               console.log("Login Failed");
             }}
-            text="Signin"
+            text="signup_with"
             size="large"
             theme="filled_blue"
             width="296"

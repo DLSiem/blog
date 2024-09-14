@@ -1,5 +1,8 @@
-// User Signup
+const { sendEmail } = require("./mailController");
+const nodemailer = require("nodemailer");
+const { authenticator } = require("otplib");
 
+// User Signup
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -189,6 +192,200 @@ const refreshToken = async (req, res) => {
   }
 };
 
-// User Logout
+// email verification
 
-module.exports = { authenticate, protected, refreshToken };
+const sendEmailVerification = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(403).json({ message: "User not found" });
+    }
+
+    // generate token
+
+    const verifyEmailToken = authenticator.generate(process.env.OTP_SECRET);
+
+    // create test email account
+    let testAccount = await nodemailer.createTestAccount();
+
+    if (!testAccount) {
+      console.log("Internal Server Error");
+      return { message: "Internal Server Error" };
+    }
+    console.log("testAccount", testAccount);
+
+    // create a SMTP transporter object
+    let transporter = nodemailer.createTransport({
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
+
+    // message object
+
+    const verifyEmailUrl = `http://localhost:5173/auth/emailverifymessage?token=${verifyEmailToken}&userId=${user._id}`;
+
+    let message = {
+      from: `Sender <${testAccount.user}>`,
+      to: `Receiver <${email}>`,
+      subject: "Email Verification",
+      text: "Please verify your email by clicking the link below.",
+      html: `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Email Verification</title>
+      <style>
+          body {
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+              margin: 0;
+              padding: 0;
+              color: #333333;
+          }
+          .email-container {
+              max-width: 600px;
+              margin: 0 auto;
+              background-color: #ffffff;
+              padding: 20px;
+              border-radius: 8px;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          }
+          .header {
+              text-align: center;
+              padding: 20px;
+              background-color: #007bff;
+              color: #ffffff;
+              border-top-left-radius: 8px;
+              border-top-right-radius: 8px;
+          }
+          .header h1 {
+              margin: 0;
+              font-size: 24px;
+          }
+          .content {
+              padding: 20px;
+              text-align: center;
+          }
+          .content p {
+              font-size: 18px;
+              margin: 20px 0;
+          }
+          .verify-button {
+              display: inline-block;
+              padding: 15px 25px;
+              background-color: #28a745;
+              color: #ffffff;
+              text-decoration: none;
+              font-size: 18px;
+              border-radius: 5px;
+              margin-top: 20px;
+              transition: background-color 0.3s ease;
+          }
+          .verify-button:hover {
+              background-color: #218838;
+          }
+          .footer {
+              padding: 20px;
+              text-align: center;
+              font-size: 14px;
+              color: #777777;
+          }
+      </style>
+  </head>
+  <body>
+
+      <div class="email-container">
+          <div class="header">
+              <h1>Email Verification</h1>
+          </div>
+
+          <div class="content">
+              <p>Hello,</p>
+              <p>Thank you for registering! Please click the button below to verify your email address and complete your registration.</p>
+              <a href="${verifyEmailUrl}" class="verify-button">Verify Email</a>
+              <p>If you didn’t create an account, please ignore this email.</p>
+          </div>
+
+          <div class="footer">
+              <p>&copy; 2024 Your Website. All rights reserved.</p>
+          </div>
+      </div>
+
+  </body>
+  </html>
+  `,
+    };
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail(message);
+
+    if (!info) {
+      return { message: "Internal Server Error" };
+    }
+
+    console.log("Message sent: %s", info.messageId);
+
+    console.log(
+      "Preview URL: %s",
+      nodemailer.getTestMessageUrl(info),
+      verifyEmailToken
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Email Sent", info, verifyEmailToken });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const verifyEmailToken = async (req, res) => {
+  try {
+    const { token, userId } = req.query;
+    console.log("token", token);
+    if (!token) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+
+    const isValid = await authenticator.verify({
+      token,
+      secret: process.env.OTP_SECRET,
+    });
+
+    console.log("isValid", isValid);
+
+    if (isValid) {
+      await User.findByIdAndUpdate(userId, {
+        emailVerified: true,
+      }).catch((error) => {
+        console.log(error);
+        return res.status(500).json({ message: "Coundn't update user!" });
+      });
+      return res.status(200).json({ message: "Email Verified" });
+    } else {
+      return res.status(400).json({ message: "Invalid Token" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  authenticate,
+  protected,
+  refreshToken,
+  sendEmailVerification,
+  verifyEmailToken,
+};
