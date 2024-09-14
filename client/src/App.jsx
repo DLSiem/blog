@@ -13,6 +13,7 @@ import {
   EditBlog,
   EmailVerify,
   EmailVerifyMessage,
+  OTPLogin,
 } from "./pages";
 
 import { HomeLayout, ProtectedRoutes, OnlyNoneAuth } from "./components";
@@ -122,6 +123,14 @@ const router = createBrowserRouter([
             path: "emailverifymessage",
             loader: verifyEmailToken,
             element: <EmailVerifyMessage />,
+          },
+          {
+            path: "otplogin",
+            element: (
+              <OnlyNoneAuth>
+                <OTPLogin />
+              </OnlyNoneAuth>
+            ),
           },
           {
             path: "logout",

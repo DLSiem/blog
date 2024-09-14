@@ -419,8 +419,6 @@ const otpLogin = async (req, res) => {
       html: `<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Verification</title>
     <style>
         body {
@@ -480,7 +478,7 @@ const otpLogin = async (req, res) => {
             <p>Hello,</p>
             <p>Here is your One-Time Password (OTP) for verification:</p>
             <div class="otp-code">${otp}</div>
-            <p>This OTP is valid for the next 5 minutes. Please use it to complete your verification process.</p>
+            <p>This OTP is valid for the next 2 minutes. Please use it to complete your verification process.</p>
         </div>
         <div class="footer">
             <p>&copy; 2024 Your Company. All rights reserved.</p>
@@ -503,7 +501,7 @@ const otpLogin = async (req, res) => {
 
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info), otp);
 
-    return res.status(200).json({ message: "Email Sent", info, otp });
+    return res.status(200).json({ message: "Email Sent" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });

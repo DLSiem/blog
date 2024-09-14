@@ -12,3 +12,4 @@ export { default as EditProfile } from "./EditProfile";
 export { default as EditBlog } from "./EditBlog";
 export { default as EmailVerify } from "./EmailVerify";
 export { default as EmailVerifyMessage } from "./EmailVerifyMessage";
+export { default as OTPLogin } from "./OTPLogin";

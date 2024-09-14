@@ -357,6 +357,53 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // otp login action
+
+  const otpLogin = async (data) => {
+    const { email, otp } = data;
+    dispatch({
+      type: "LOGIN_REQUEST",
+    });
+
+    try {
+      const response = await fetch("http://localhost:3000/auth/otpverify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          otp,
+        }),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        dispatch({
+          type: "LOGIN_FAILURE",
+          payload: data,
+        });
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      dispatch({
+        type: "LOGIN",
+        payload: data,
+      });
+    } catch (error) {
+      console.log("error:-", error);
+      dispatch({
+        type: "LOGIN_FAILURE",
+        payload: {
+          message: "Internal server error!",
+        },
+      });
+    }
+  };
+
   // set user
   const updateUser = (user) => {
     dispatch({
@@ -387,6 +434,7 @@ export const AuthProvider = ({ children }) => {
         updateUser,
         logout,
         isTokenValid,
+        otpLogin,
       }}
     >
       {children}
