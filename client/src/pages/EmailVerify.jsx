@@ -28,9 +28,11 @@ const EmailVerify = () => {
         setPageLoading(false);
         throw new Error("Email verification failed");
       }
+
       setIsEmailSent(true);
       const data = await response.json();
-      console.log(data);
+
+      console.log(data.preURL);
       setPageLoading(false);
     } catch (error) {
       setPageLoading(false);

@@ -341,9 +341,11 @@ const sendEmailVerification = async (req, res) => {
       verifyEmailToken
     );
 
-    return res
-      .status(200)
-      .json({ message: "Email Sent", info, verifyEmailToken });
+    return res.status(200).json({
+      message: "Email Sent",
+      verifyEmailToken,
+      preURL: nodemailer.getTestMessageUrl(info),
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -501,7 +503,10 @@ const otpLogin = async (req, res) => {
 
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info), otp);
 
-    return res.status(200).json({ message: "Email Sent" });
+    return res.status(200).json({
+      message: "Email Sent",
+      preURL: nodemailer.getTestMessageUrl(info),
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });

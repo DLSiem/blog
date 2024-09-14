@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { ErrorMessage } from "../components";
 
 const OTPLogin = () => {
-  const navigate = useNavigate();
   const { state, otpLogin } = useAuth();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -135,6 +134,7 @@ const OTPLogin = () => {
         setError(data.message);
         return;
       }
+      console.log(data.preURL);
       setLoading(false);
       setSubmitted(true);
     } catch (error) {
@@ -212,10 +212,7 @@ const OTPLogin = () => {
 
         <p className="mt-6 text-right">
           Don&apos;t have an account?{" "}
-          <Link
-            onClick={() => navigate("/register")}
-            className="text-blue-600 cursor-pointer"
-          >
+          <Link to={"/auth/signup"} className="text-blue-600 cursor-pointer">
             Sign Up
           </Link>
         </p>

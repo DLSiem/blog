@@ -91,15 +91,6 @@ const Signup = () => {
           />
         </div>
 
-        <p className="text-gray-700 mt-4 text-right">
-          <Link
-            to="/auth/forgot-password"
-            className="text-blue-600 hover:underline"
-          >
-            Forgot Password?
-          </Link>
-        </p>
-
         {state.error ? <ErrorMessage message={state.message} /> : ""}
       </div>
     </div>
