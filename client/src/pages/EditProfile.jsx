@@ -12,7 +12,6 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
     username: state.user.username,
-    email: state.user.email,
     profilePicture: state.user.profilePicture,
   });
   const [imageLoading, setImageLoading] = useState(false);
@@ -139,16 +138,12 @@ const EditProfile = () => {
             />
 
             {/* Email */}
-            <input
-              type="email"
-              // value={user.email}
-              name="email"
-              value={user.email}
-              onChange={(e) => {
-                setUser({ ...user, email: e.target.value });
-              }}
+            <p
+              title="You cannot edit email!"
               className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            >
+              {state.user?.email}
+            </p>
           </div>
 
           {/* Save Button */}

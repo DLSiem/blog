@@ -12,6 +12,7 @@ const CreateBlog = () => {
   const navigate = useNavigate();
   const { state } = useAuth();
   const fetcher = useFetcher();
+  const emailVerified = state.user?.emailVerified;
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -175,7 +176,20 @@ const CreateBlog = () => {
   }, [fetcher.data, fetcher.error, fetcher.loading, navigate, fetcher.blog]);
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto px-4">
+      {!emailVerified && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg my-2 relative flex items-center justify-between"
+          role="alert"
+        >
+          <div className="flex items-center">
+            <strong className="font-bold">Email not verified!</strong>
+            <span className="block sm:inline ml-2">
+              Please verify your email to create a blog.
+            </span>
+          </div>
+        </div>
+      )}
       <h1 className="text-3xl font-bold text-gray-800 mb-6">
         Create a New Blog
       </h1>
@@ -351,9 +365,13 @@ const CreateBlog = () => {
         <div>
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+            disabled={!emailVerified}
+            className={`bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 ${
+              !emailVerified &&
+              "hover:cursor-not-allowed bg-blue-400 hover:bg-blue-300"
+            } `}
           >
-            Submit Blog
+            {emailVerified ? "Create Blog" : "Verify Email to Create Blog"}
           </button>
         </div>
       </form>

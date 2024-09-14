@@ -26,6 +26,7 @@ import { verifyEmailToken } from "./loaders/authLoader";
 
 import { AuthProvider } from "./context/AuthContext";
 import EditProfile from "./pages/EditProfile";
+
 const router = createBrowserRouter([
   {
     path: "/",

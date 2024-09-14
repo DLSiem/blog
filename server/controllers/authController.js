@@ -362,7 +362,6 @@ const verifyEmailToken = async (req, res) => {
       token,
       secret: process.env.OTP_SECRET,
     });
-
     await User.findByIdAndUpdate(userId, {
       emailVerified: true,
     }).catch((error) => {

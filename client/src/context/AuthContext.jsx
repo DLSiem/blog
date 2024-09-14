@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 // initial states
 
 const initialStates = {
+  loading: true,
   isAuthenticated: false,
   user: null,
   error: false,
-  loading: true,
   message: "",
 };
 
@@ -24,6 +24,12 @@ const authReducer = (state, action) => {
       };
     }
 
+    case "SET_LOADING": {
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    }
     case "LOGIN_REQUEST":
       return {
         ...state,
@@ -361,6 +367,10 @@ export const AuthProvider = ({ children }) => {
 
   // defining the logout action
   const logout = () => {
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
     localStorage.removeItem("token");
     dispatch({
       type: "LOGOUT",
