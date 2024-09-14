@@ -358,24 +358,18 @@ const verifyEmailToken = async (req, res) => {
       return res.status(400).json({ message: "Token is required" });
     }
 
-    const isValid = await authenticator.verify({
+    authenticator.verify({
       token,
       secret: process.env.OTP_SECRET,
     });
 
-    console.log("isValid", isValid);
-
-    if (isValid) {
-      await User.findByIdAndUpdate(userId, {
-        emailVerified: true,
-      }).catch((error) => {
-        console.log(error);
-        return res.status(500).json({ message: "Coundn't update user!" });
-      });
-      return res.status(200).json({ message: "Email Verified" });
-    } else {
-      return res.status(400).json({ message: "Invalid Token" });
-    }
+    await User.findByIdAndUpdate(userId, {
+      emailVerified: true,
+    }).catch((error) => {
+      console.log(error);
+      return res.status(500).json({ message: "Coundn't update user!" });
+    });
+    return res.status(200).json({ message: "Email Verified" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
