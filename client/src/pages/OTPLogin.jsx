@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { ErrorMessage } from "../components";
@@ -11,16 +11,14 @@ const OTPLogin = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(60);
 
   // when the user is at the OTP verification stage count to 60 seconds and then enable the resend button
+
   if (submitted) {
     setTimeout(() => {
-      setCounter(counter + 1);
+      setCounter(counter - 1);
     }, 1000);
-    if (counter === 60) {
-      setCounter(0);
-    }
   }
 
   const handleOTPSubmit = async (e) => {
@@ -48,7 +46,7 @@ const OTPLogin = () => {
           >
             OTP has been sent to your email address. Please enter the OTP here
           </p>
-          <form onSubmit={handleOTPSubmit}>
+          <form onSubmit={handleOTPSubmit} className="mb-2">
             <div className="my-4 flex justify-center">
               <input
                 type="text"
@@ -59,6 +57,7 @@ const OTPLogin = () => {
                 className="px-4 py-2 w-full border text-center text-5xl text-gray-700 font-bold h-20  border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="OTP"
                 maxLength="6"
+                minLength="6"
               />
             </div>
             <button
@@ -101,6 +100,19 @@ const OTPLogin = () => {
               {error}
             </p>
           )}
+
+          <p className="text-center text-gray-700 mt-4">
+            Didn&apos;t receive the OTP?{" "}
+            <button
+              disabled={counter >= 0}
+              onClick={() => setSubmitted(false)}
+              className={`text-blue-600 cursor-pointer ${
+                counter >= 0 && "text-gray-400 cursor-wait"
+              }`}
+            >
+              {counter < 0 ? "Resend OTP" : `Resend OTP in ${counter} seconds`}
+            </button>
+          </p>
         </div>
       </div>
     );
